@@ -26,7 +26,7 @@ def auto_recovery(func, max_retry=3):
             try:
                 return func(self, *args, **kwargs)
             except DriverConnectionError:
-                self.reconnect()
+                self.connect()
                 if self.state == DriverState.CONNECTED:
                     break
 
@@ -52,11 +52,6 @@ class IDriver(ABC):
     @abstractmethod
     def disconnect(self) -> None:
         """Disconnect from Android device."""
-        raise NotImplementedError
-
-    @abstractmethod
-    def reconnect(self) -> None:
-        """Reconnect to Android device."""
         raise NotImplementedError
 
     @abstractmethod
