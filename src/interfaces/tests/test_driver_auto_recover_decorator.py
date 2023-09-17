@@ -36,7 +36,7 @@ def driver():
         ("test", 0),
     ]
 
-    mock_driver.reconnect.side_effect = lambda: setattr(
+    mock_driver.connect.side_effect = lambda: setattr(
         mock_driver, "state", DriverState.CONNECTED
     )
 
