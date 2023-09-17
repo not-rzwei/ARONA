@@ -25,8 +25,8 @@ def driver():
 
 
 @when("I disconnect from the device")
-def driver_connect(driver: UiAutomator2Driver):
-    driver.connect()
+def driver_disconnect(driver: UiAutomator2Driver):
+    driver.disconnect()
 
 
 @then("Driver state should be disconnected")

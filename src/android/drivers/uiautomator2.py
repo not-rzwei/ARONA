@@ -13,7 +13,7 @@ from src.interfaces.driver import (
 class UiAutomator2Driver(IDriver):
     """Driver for UiAutomator2."""
 
-    device: uiautomator2.Device
+    device: Optional[uiautomator2.Device]
 
     def __init__(self, u2, serial: str):
         """
@@ -33,7 +33,9 @@ class UiAutomator2Driver(IDriver):
             raise DriverConnectionError(f"Failed to connect to {self.serial}")
 
     def disconnect(self) -> None:
-        pass
+        # TODO: Implement proper disconnect
+        self.device = None
+        self.state = DriverState.DISCONNECTED
 
     def reconnect(self) -> None:
         raise NotImplementedError
