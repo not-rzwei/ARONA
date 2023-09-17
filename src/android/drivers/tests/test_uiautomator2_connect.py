@@ -8,7 +8,7 @@ from src.interfaces.driver import DriverState
 
 
 @scenario(
-    feature_name="../features/uiautomator2.feature",
+    feature_name="features/uiautomator2.feature",
     scenario_name="Establishing a connection to an Android device",
 )
 def test_establishing_a_connection_to_an_android_device():

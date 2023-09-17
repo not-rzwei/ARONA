@@ -21,7 +21,7 @@ def disconnected_driver():
 
 
 @scenario(
-    "../features/driver.feature",
+    "features/driver.feature",
     "Auto connect driver if not connected",
 )
 def test_scenario():
