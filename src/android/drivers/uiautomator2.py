@@ -37,9 +37,6 @@ class UiAutomator2Driver(IDriver):
         self.device = None
         self.state = DriverState.DISCONNECTED
 
-    def reconnect(self) -> None:
-        raise NotImplementedError
-
     @auto_recovery
     def execute(self, command: str) -> Tuple[str, int]:
         raise NotImplementedError
