@@ -1,7 +1,7 @@
 import functools
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Optional
+from typing import Optional, Tuple
 
 
 class DriverState(Enum):
@@ -60,7 +60,7 @@ class IDriver(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def execute(self, command: str) -> (str, int):
+    def execute(self, command: str) -> Tuple[str, int]:
         """Execute shell command on Android device.
 
         Args:
