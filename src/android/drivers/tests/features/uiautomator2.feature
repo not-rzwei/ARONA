@@ -7,6 +7,6 @@ Feature: UIAutomator2 driver for Android
     And Device property should be set
 
   Scenario: Cannot establish a connection to an Android device
-    Given I have an Android device serial address
-    When Driver connect to the device 3 times
-    Then Driver raise an error after reaching max retries
+    Given Device serial address is unreachable
+    When I connect to the device
+    Then Driver raise an error

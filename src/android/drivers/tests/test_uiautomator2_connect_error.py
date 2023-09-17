@@ -4,7 +4,7 @@ import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
-from src.interfaces.driver import DriverRetryError
+from src.interfaces.driver import DriverConnectionError
 
 
 @scenario(
@@ -15,31 +15,25 @@ def test_establishing_a_connection_to_an_android_device():
     pass
 
 
-@given("I have an Android device serial address", target_fixture="driver")
+@given("Device serial address is unreachable", target_fixture="driver")
 def driver():
     u2 = mock.Mock(spec=uiautomator2)
-    u2.connect = mock.Mock(
-        side_effect=[
-            uiautomator2.ConnectError,
-            uiautomator2.ConnectError,
-            uiautomator2.ConnectError,
-        ],
-    )
+    u2.connect.side_effect = uiautomator2.ConnectError
 
-    serial = "127.0.0.1:16448"
+    serial = "127.0.0.1:6969"
     dev = UiAutomator2Driver(u2, serial)  # type: ignore
     return dev
 
 
-@when("Driver connect to the device 3 times", target_fixture="driver_connect")
+@when("I connect to the device", target_fixture="driver_connect")
 def driver_connect(driver: UiAutomator2Driver):
     try:
         driver.connect()
         return False
-    except DriverRetryError:
+    except DriverConnectionError:
         return True
 
 
-@then("Driver raise an error after reaching max retries")
+@then("Driver raise an error")
 def connected_state(driver_connect):
     assert driver_connect is True

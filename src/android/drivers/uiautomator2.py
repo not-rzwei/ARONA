@@ -6,7 +6,7 @@ from src.interfaces.driver import (
     IDriver,
     auto_recovery,
     DriverState,
-    DriverRetryError,
+    DriverConnectionError,
 )
 
 
@@ -26,20 +26,14 @@ class UiAutomator2Driver(IDriver):
         self.serial = serial
 
     def connect(self) -> None:
-        for _ in range(3):
-            try:
-                self.device = self.u2.connect(self.serial)
-                self.state = DriverState.CONNECTED
-                break
-            except uiautomator2.ConnectError:
-                continue
-        else:
-            raise DriverRetryError(
-                f"Cannot connect to {self.serial}. Max retry exceeded"
-            )
+        try:
+            self.device = self.u2.connect(self.serial)
+            self.state = DriverState.CONNECTED
+        except uiautomator2.ConnectError:
+            raise DriverConnectionError(f"Failed to connect to {self.serial}")
 
     def disconnect(self) -> None:
-        raise NotImplementedError
+        pass
 
     def reconnect(self) -> None:
         raise NotImplementedError
