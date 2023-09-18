@@ -53,3 +53,21 @@ Feature: UIAutomator2 driver for Android
     And ATX agent return invalid pid
     When I run a daemon
     Then Driver should raise an server error
+
+#  Push file
+  Scenario: Push a file to an Android device
+    Given Driver is already connected to the device
+    When I push a file
+    Then Driver should not raise an error
+
+  Scenario: Error pushing a file to an Android device because file not found
+    Given Driver is already connected to the device
+    And File to push is not found
+    When I push a file
+    Then Driver should raise an error
+
+  Scenario: Error pushing a file to an Android device because permission denied on device
+    Given Driver is already connected to the device
+    And Destination path is not writable
+    When I push a file
+    Then Driver should raise an error

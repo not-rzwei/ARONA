@@ -9,6 +9,7 @@ from src.interfaces.driver import (
     DriverConnectionError,
     DriverCommandError,
     DriverServerError,
+    DriverPushError,
 )
 
 
@@ -78,8 +79,17 @@ class UiAutomator2Driver(IDriver):
             )
 
     @auto_recovery
-    def push(self, src: str, dst: str) -> None:
-        raise NotImplementedError
+    def push(self, src: str, dst: str):
+        if self.device is None:
+            raise DriverConnectionError("Device is not connected")
+
+        try:
+            with open(src, "rb") as f:
+                self.device.push(f, dst)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File {src} not found")
+        except IOError as e:
+            raise DriverPushError("Failed to push file")
 
     @auto_recovery
     def forward(self, remote: int, local: Optional[int] = None) -> int:
