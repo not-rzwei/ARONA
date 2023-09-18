@@ -1,6 +1,5 @@
 from unittest import mock
 
-import pytest
 from pytest_bdd import given, when, then, scenario
 
 from src.interfaces.driver import (
@@ -12,17 +11,9 @@ from src.interfaces.driver import (
 )
 
 
-@pytest.fixture
-def disconnected_driver():
-    mock_driver = mock.Mock(spec=IDriver)
-    mock_driver.state = DriverState.DISCONNECTED
-
-    return mock_driver
-
-
 @scenario(
     "features/driver.feature",
-    "Auto connect driver if not connected",
+    "Auto recover driver if not connected",
 )
 def test_scenario():
     pass
@@ -43,7 +34,7 @@ def driver():
     return mock_driver
 
 
-@when("I execute a decorated command with auto connect", target_fixture="result")
+@when("I execute a decorated command with auto recover", target_fixture="result")
 def call_decorated_method(driver):
     try:
         return auto_recovery(driver.execute)(driver, "test")
