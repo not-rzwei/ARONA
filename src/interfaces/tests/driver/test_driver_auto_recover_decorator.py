@@ -12,7 +12,7 @@ from src.interfaces.driver import (
 
 
 @scenario(
-    "features/driver.feature",
+    "driver.feature",
     "Auto recover driver if not connected",
 )
 def test_scenario():
@@ -20,7 +20,7 @@ def test_scenario():
 
 
 @given("Driver is not connected to the device", target_fixture="driver")
-def driver():
+def given1():
     mock_driver = mock.Mock(spec=IDriver)
     mock_driver.execute.side_effect = [
         DriverConnectionError,
@@ -35,7 +35,7 @@ def driver():
 
 
 @when("I execute a decorated command with auto recover", target_fixture="result")
-def call_decorated_method(driver):
+def when1(driver):
     try:
         return auto_recovery(driver.execute)(driver, "test")
     except DriverRetryError:
@@ -43,10 +43,10 @@ def call_decorated_method(driver):
 
 
 @then("Driver should be connected to the device")
-def driver_connected(driver):
+def then1(driver):
     assert driver.state == DriverState.CONNECTED
 
 
 @then("I get a result from the command")
-def command_result(result):
+def then2(result):
     assert result == ("test", 0)

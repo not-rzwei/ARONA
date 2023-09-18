@@ -11,7 +11,7 @@ from src.interfaces.driver import (
 
 
 @scenario(
-    "features/driver.feature",
+    "driver.feature",
     "Abort auto recover if function throw other exception than DeviceNotConnectedException",
 )
 def test_scenario():
@@ -19,7 +19,7 @@ def test_scenario():
 
 
 @given("Driver is already connected to the device", target_fixture="driver")
-def driver():
+def given1():
     mock_driver = mock.Mock(spec=IDriver)
     mock_driver.execute.side_effect = [
         DriverConnectionError,
@@ -31,7 +31,7 @@ def driver():
 
 
 @when("I execute a decorated command with auto recover", target_fixture="result")
-def call_decorated_method(driver):
+def when1(driver):
     try:
         return auto_recovery(driver.execute)(driver, "test")
     except Exception as e:
@@ -39,10 +39,10 @@ def call_decorated_method(driver):
 
 
 @then("Driver raise the exception thrown by the function")
-def driver_connected(result):
+def then1(result):
     assert issubclass(type(result), DriverCommandError)
 
 
 @then("Exit from auto recover")
-def exit_auto_recover(driver):
+def then2(driver):
     assert driver.execute.call_count == 2
