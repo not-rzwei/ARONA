@@ -1,5 +1,6 @@
 Feature: UIAutomator2 driver for Android
 
+#  Connection stuff
   Scenario: Establishing a connection to an Android device
     Given I have an Android device serial address
     When I connect to the device
@@ -17,6 +18,7 @@ Feature: UIAutomator2 driver for Android
     Then Driver state should be disconnected
     And Device property should be None
 
+#  Execute shell commands
   Scenario: Execute a shell command on an Android device
     Given Driver is already connected to the device
     When I execute a command
@@ -26,3 +28,28 @@ Feature: UIAutomator2 driver for Android
     Given Driver is already connected to the device
     When I execute a command
     Then Driver should raise an error
+
+#  Run a daemon
+  Scenario: Run a daemon on an Android device
+    Given Driver is already connected to the device
+    And ATX agent is running on the device
+    When I run a daemon
+    Then Driver should return the pid of the daemon
+
+  Scenario: Error running a daemon on an Android device because ATX return non 200
+    Given Driver is already connected to the device
+    And ATX agent can't process request
+    When I run a daemon
+    Then Driver should raise an server error
+
+  Scenario: Error running a daemon on an Android device because invalid json
+    Given Driver is already connected to the device
+    And ATX agent return invalid json
+    When I run a daemon
+    Then Driver should raise an server error
+
+  Scenario: Error running a daemon on an Android device because invalid pid
+    Given Driver is already connected to the device
+    And ATX agent return invalid pid
+    When I run a daemon
+    Then Driver should raise an server error

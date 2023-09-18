@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict
 
 import uiautomator2
 
@@ -8,6 +8,7 @@ from src.interfaces.driver import (
     DriverState,
     DriverConnectionError,
     DriverCommandError,
+    DriverServerError,
 )
 
 
@@ -40,9 +41,9 @@ class UiAutomator2Driver(IDriver):
 
     @auto_recovery
     def execute(self, command: str) -> Tuple[str, int]:
+        if self.device is None:
+            raise DriverConnectionError("Device is not connected")
         try:
-            if self.device is None:
-                raise DriverConnectionError("Device is not connected")
             output, exit_code = self.device.shell(command)
             output = output.rstrip("\n")
             return output, exit_code
@@ -51,7 +52,30 @@ class UiAutomator2Driver(IDriver):
 
     @auto_recovery
     def run_daemon(self, command: str) -> int:
-        raise NotImplementedError
+        if self.device is None:
+            raise DriverConnectionError("Device is not connected")
+
+        try:
+            resp = self.device.http.post("/shell/background", data={"command": command})
+
+            if resp.status_code != 200:
+                raise DriverServerError(
+                    f"ATX server returned {resp.status_code} for command {command}"
+                )
+            content: Dict = resp.json()
+            pid = content.get("pid")
+
+            # check if response pid is number
+            if pid is None:
+                raise DriverServerError(
+                    f"ATX server returned invalid pid {pid} for command {command}"
+                )
+
+            return pid
+        except ValueError:
+            raise DriverServerError(
+                f"ATX server returned invalid json for command {command}"
+            )
 
     @auto_recovery
     def push(self, src: str, dst: str) -> None:

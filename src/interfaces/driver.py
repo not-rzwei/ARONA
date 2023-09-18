@@ -23,6 +23,10 @@ class DriverCommandError(Exception):
     pass
 
 
+class DriverServerError(Exception):
+    pass
+
+
 def auto_recovery(func, max_retry=3):
     @functools.wraps(func)
     def wrapper(self: IDriver, *args, **kwargs):
