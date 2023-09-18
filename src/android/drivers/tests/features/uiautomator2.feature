@@ -16,3 +16,13 @@ Feature: UIAutomator2 driver for Android
     When I disconnect from the device
     Then Driver state should be disconnected
     And Device property should be None
+
+  Scenario: Execute a shell command on an Android device
+    Given Driver is already connected to the device
+    When I execute a command
+    Then Driver should return a response
+
+  Scenario: Error executing a shell command on an Android device
+    Given Driver is already connected to the device
+    When I execute a command
+    Then Driver should raise an error

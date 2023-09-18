@@ -7,6 +7,7 @@ from src.interfaces.driver import (
     auto_recovery,
     DriverState,
     DriverConnectionError,
+    DriverCommandError,
 )
 
 
@@ -39,7 +40,14 @@ class UiAutomator2Driver(IDriver):
 
     @auto_recovery
     def execute(self, command: str) -> Tuple[str, int]:
-        raise NotImplementedError
+        try:
+            if self.device is None:
+                raise DriverConnectionError("Device is not connected")
+            output, exit_code = self.device.shell(command)
+            output = output.rstrip("\n")
+            return output, exit_code
+        except RuntimeError as e:
+            raise DriverCommandError(e)
 
     @auto_recovery
     def run_daemon(self, command: str) -> int:
