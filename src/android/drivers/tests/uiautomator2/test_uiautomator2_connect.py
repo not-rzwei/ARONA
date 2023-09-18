@@ -8,15 +8,15 @@ from src.interfaces.driver import DriverState
 
 
 @scenario(
-    feature_name="features/uiautomator2.feature",
+    feature_name="uiautomator2.feature",
     scenario_name="Establishing a connection to an Android device",
 )
-def test_establishing_a_connection_to_an_android_device():
+def test_scenario():
     pass
 
 
 @given("I have an Android device serial address", target_fixture="driver")
-def driver():
+def given1():
     u2 = mock.Mock(name="uiautomator2", spec=uiautomator2)
     serial = "127.0.0.1:16448"
     dev = UiAutomator2Driver(u2, serial)  # type: ignore
@@ -24,12 +24,12 @@ def driver():
 
 
 @when("I connect to the device")
-def driver_connect(driver: UiAutomator2Driver):
+def when1(driver: UiAutomator2Driver):
     driver.connect()
 
 
 @then("Driver state should be connected")
-def connected_state(driver: UiAutomator2Driver):
+def then1(driver: UiAutomator2Driver):
     assert driver.state == DriverState.CONNECTED
 
 

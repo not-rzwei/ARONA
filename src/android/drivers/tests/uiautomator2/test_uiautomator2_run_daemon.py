@@ -8,7 +8,7 @@ from src.android.drivers.uiautomator2 import UiAutomator2Driver
 
 
 @scenario(
-    feature_name="features/uiautomator2.feature",
+    feature_name="uiautomator2.feature",
     scenario_name="Run a daemon on an Android device",
 )
 def test_scenario():
@@ -16,7 +16,7 @@ def test_scenario():
 
 
 @given("Driver is already connected to the device", target_fixture="driver")
-def driver():
+def given1():
     u2 = mock.Mock(spec=uiautomator2)
     serial = "127.0.0.1:16448"
 
@@ -28,7 +28,7 @@ def driver():
 
 
 @given("ATX agent is running on the device")
-def atx(driver):
+def given2(driver):
     mock_response = mock.Mock(spec=Response)
     mock_response.status_code = 200
     mock_response.json.return_value = {"pid": 123}
@@ -36,11 +36,11 @@ def atx(driver):
 
 
 @when("I run a daemon", target_fixture="result")
-def run_daemon(driver: UiAutomator2Driver):
+def when1(driver: UiAutomator2Driver):
     result = driver.run_daemon("sleep 123")
     return result
 
 
 @then("Driver should return the pid of the daemon")
-def check_pid(result):
+def then1(result):
     assert result == 123

@@ -8,7 +8,7 @@ from src.interfaces.driver import DriverCommandError
 
 
 @scenario(
-    feature_name="features/uiautomator2.feature",
+    feature_name="uiautomator2.feature",
     scenario_name="Error executing a shell command on an Android device",
 )
 def test_scenario():
@@ -16,7 +16,7 @@ def test_scenario():
 
 
 @given("Driver is already connected to the device", target_fixture="driver")
-def driver():
+def given1():
     u2 = mock.Mock(spec=uiautomator2)
     serial = "127.0.0.1:16448"
 
@@ -29,7 +29,7 @@ def driver():
 
 
 @when("I execute a command", target_fixture="is_error")
-def driver_disconnect(driver: UiAutomator2Driver):
+def when1(driver: UiAutomator2Driver):
     try:
         driver.execute("echo hello world")
         return False
@@ -38,5 +38,5 @@ def driver_disconnect(driver: UiAutomator2Driver):
 
 
 @then("Driver should raise an error")
-def connected_state(is_error):
+def then1(is_error):
     assert is_error is True

@@ -8,7 +8,7 @@ from src.interfaces.driver import DriverState
 
 
 @scenario(
-    feature_name="features/uiautomator2.feature",
+    feature_name="uiautomator2.feature",
     scenario_name="Disconnecting from an Android device",
 )
 def test_scenario():
@@ -16,7 +16,7 @@ def test_scenario():
 
 
 @given("Driver is already connected to the device", target_fixture="driver")
-def driver():
+def given1():
     u2 = mock.Mock(name="uiautomator2", spec=uiautomator2)
     serial = "127.0.0.1:16448"
     dev = UiAutomator2Driver(u2, serial)  # type: ignore
@@ -25,15 +25,15 @@ def driver():
 
 
 @when("I disconnect from the device")
-def driver_disconnect(driver: UiAutomator2Driver):
+def when1(driver: UiAutomator2Driver):
     driver.disconnect()
 
 
 @then("Driver state should be disconnected")
-def connected_state(driver: UiAutomator2Driver):
+def then1(driver: UiAutomator2Driver):
     assert driver.state == DriverState.DISCONNECTED
 
 
 @then("Device property should be None")
-def device_property(driver: UiAutomator2Driver):
+def then2(driver: UiAutomator2Driver):
     assert driver.device is None
