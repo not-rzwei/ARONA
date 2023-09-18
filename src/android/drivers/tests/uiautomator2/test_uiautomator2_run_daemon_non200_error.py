@@ -1,5 +1,6 @@
 from unittest import mock
 
+import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 from requests import Response
@@ -35,15 +36,12 @@ def given2(driver):
     driver.device.http.post.return_value = mock_response
 
 
-@when("I run a daemon", target_fixture="result")
+@when("I run a daemon")
 def when1(driver: UiAutomator2Driver):
-    try:
+    with pytest.raises(DriverServerError):
         driver.run_daemon("sleep 123")
-        return False
-    except DriverServerError:
-        return True
 
 
 @then("Driver should raise an server error")
-def then1(result):
-    assert result is True
+def then1():
+    pass

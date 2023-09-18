@@ -1,5 +1,6 @@
 from unittest import mock
 
+import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
@@ -25,15 +26,12 @@ def given1():
     return dev
 
 
-@when("I connect to the device", target_fixture="driver_connect")
+@when("I connect to the device")
 def when1(driver: UiAutomator2Driver):
-    try:
+    with pytest.raises(DriverConnectionError):
         driver.connect()
-        return False
-    except DriverConnectionError:
-        return True
 
 
 @then("Driver raise an error")
-def then1(driver_connect):
-    assert driver_connect is True
+def then1():
+    pass

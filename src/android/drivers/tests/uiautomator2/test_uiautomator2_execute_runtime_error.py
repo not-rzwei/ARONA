@@ -1,5 +1,6 @@
 from unittest import mock
 
+import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
@@ -28,15 +29,12 @@ def given1():
     return dev
 
 
-@when("I execute a command", target_fixture="is_error")
+@when("I execute a command")
 def when1(driver: UiAutomator2Driver):
-    try:
+    with pytest.raises(DriverCommandError):
         driver.execute("echo hello world")
-        return False
-    except DriverCommandError:
-        return True
 
 
 @then("Driver should raise an error")
-def then1(is_error):
-    assert is_error is True
+def then1():
+    pass
