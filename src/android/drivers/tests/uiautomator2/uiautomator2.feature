@@ -71,3 +71,20 @@ Feature: UIAutomator2 driver for Android
     And Destination path is not writable
     When I push a file
     Then Driver should raise an error
+
+#  Forward port
+  Scenario: Forward remote port to random local port
+    Given Driver is already connected to the device
+    When I forward a port
+    Then Driver should return a local port
+
+  Scenario: Forward remote port to specified local port
+    Given Driver is already connected to the device
+    When I forward a port
+    Then Driver should return a local port
+
+  Scenario: Error forwarding remote port to local port
+    Given Driver is already connected to the device
+    And Somehow can't forward port
+    When I forward a port
+    Then Driver should raise an error

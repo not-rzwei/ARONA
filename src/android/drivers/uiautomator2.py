@@ -1,6 +1,7 @@
 from typing import Optional, Tuple, Dict
 
 import uiautomator2
+from adbutils import AdbError
 
 from src.interfaces.driver import (
     IDriver,
@@ -10,6 +11,7 @@ from src.interfaces.driver import (
     DriverCommandError,
     DriverServerError,
     DriverPushError,
+    DriverForwardError,
 )
 
 
@@ -91,6 +93,17 @@ class UiAutomator2Driver(IDriver):
         except IOError as e:
             raise DriverPushError("Failed to push file")
 
+    # noinspection PyProtectedMember
     @auto_recovery
     def forward(self, remote: int, local: Optional[int] = None) -> int:
-        raise NotImplementedError
+        if self.device is None:
+            raise DriverConnectionError("Device is not connected")
+        try:
+            if local is not None:
+                return self.device._adb_device.forward(remote, local)
+
+            return self.device._adb_device.forward_port(remote)
+        except RuntimeError as e:
+            raise DriverForwardError(f"Cannot forward port {remote}", e)
+        except AdbError as e:
+            raise DriverConnectionError("Device is not connected", e)
