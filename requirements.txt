@@ -1,0 +1,5 @@
+adbutils==1.2.13
+pytest==7.4.2
+pytest_bdd==6.1.1
+Requests==2.31.0
+uiautomator2==2.16.25
