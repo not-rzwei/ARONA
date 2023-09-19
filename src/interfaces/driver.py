@@ -35,6 +35,10 @@ class DriverForwardError(Exception):
     pass
 
 
+class DriverResolutionError(Exception):
+    pass
+
+
 def auto_recovery(func, max_retry=3):
     @functools.wraps(func)
     def wrapper(self: IDriver, *args, **kwargs):
@@ -115,5 +119,17 @@ class IDriver(ABC):
 
         Returns:
             int: Port on local machine.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
+        """Get device resolution.
+
+        Args:
+            landscape (bool, optional): Get resolution in landscape mode. Defaults to True.
+
+        Returns:
+            Tuple[int, int]: Device resolution. Width, height.
         """
         raise NotImplementedError

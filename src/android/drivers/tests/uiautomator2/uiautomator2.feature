@@ -88,3 +88,14 @@ Feature: UIAutomator2 driver for Android
     And Somehow can't forward port
     When I forward a port
     Then Driver should raise an error
+
+# Get device resolution
+  Scenario: Get device resolution in landscape mode
+    Given Device resolution is 720x1280
+    When I get device resolution in landscape
+    Then Driver should return a resolution of 1280x720
+
+  Scenario: Error getting device resolution
+    Given Driver is glitchy
+    When I get device resolution
+    Then Driver should raise an error

@@ -12,6 +12,7 @@ from src.interfaces.driver import (
     DriverServerError,
     DriverPushError,
     DriverForwardError,
+    DriverResolutionError,
 )
 
 
@@ -107,3 +108,19 @@ class UiAutomator2Driver(IDriver):
             raise DriverForwardError(f"Cannot forward port {remote}", e)
         except AdbError as e:
             raise DriverConnectionError("Device is not connected", e)
+
+    def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
+        if self.device is None:
+            raise DriverConnectionError("Device is not connected")
+
+        resolution = self.device.device_info.get("display", {})
+        width = resolution.get("width", 0)
+        height = resolution.get("height", 0)
+
+        if width == 0 or height == 0:
+            raise DriverResolutionError("Failed to get device resolution")
+
+        if landscape and width < height:
+            return height, width
+
+        return width, height
