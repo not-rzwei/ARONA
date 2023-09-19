@@ -32,7 +32,7 @@ class UiAutomator2Driver(IDriver):
 
     def connect(self) -> None:
         try:
-            self.device = self.u2.connect(self.serial)
+            self.device = self.u2.connect_adb_wifi(self.serial)
             self.state = DriverState.CONNECTED
         except uiautomator2.ConnectError:
             raise DriverConnectionError(f"Failed to connect to {self.serial}")

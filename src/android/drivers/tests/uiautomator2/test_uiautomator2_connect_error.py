@@ -19,7 +19,7 @@ def test_scenario():
 @given("Device serial address is unreachable", target_fixture="driver")
 def given1():
     u2 = mock.Mock(spec=uiautomator2)
-    u2.connect.side_effect = uiautomator2.ConnectError
+    u2.connect_adb_wifi.side_effect = uiautomator2.ConnectError
 
     serial = "127.0.0.1:6969"
     dev = UiAutomator2Driver(u2, serial)  # type: ignore
