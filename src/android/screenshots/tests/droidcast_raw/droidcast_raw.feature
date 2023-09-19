@@ -1,5 +1,6 @@
 Feature: Screenshot using Droidcast Raw
 
+# Setup: push apk
   Scenario: Push droidcast raw apk to device on setup
     Given Driver is connected to device
     When I setup the screenshot
@@ -11,6 +12,7 @@ Feature: Screenshot using Droidcast Raw
     When I setup the screenshot
     Then Droidcast should raise an error
 
+# Setup: run apk
   Scenario: Run droidcast raw server on device on setup
     Given APK file has been pushed to device
     When I setup the screenshot
@@ -22,6 +24,7 @@ Feature: Screenshot using Droidcast Raw
     When I setup the screenshot
     Then Droidcast should raise an error
 
+# Setup: forward port
   Scenario: Forward droidcast port to host on setup
     Given Droidcast server is running on device
     When I setup the screenshot
