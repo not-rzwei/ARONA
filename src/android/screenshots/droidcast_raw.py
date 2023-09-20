@@ -1,4 +1,5 @@
 import numpy
+import requests
 
 from src.interfaces.driver import (
     IDriver,
@@ -16,8 +17,10 @@ class DroidcastRawScreenshot(IScreenshot):
     _apk_path = "bin/droidcast_raw/droidcast_raw.apk"
     _android_path = "/data/local/tmp/droidcast_raw.apk"
 
+    _url = ""
+    _session = None
+
     resolution = (0, 0)
-    url = ""
     pid = 0
     local_port = 0
     remote_port = 16969
@@ -29,7 +32,10 @@ class DroidcastRawScreenshot(IScreenshot):
                 f"CLASSPATH={self._android_path} app_process / ink.mol.droidcast_raw.Main --port={self.remote_port}"
             )
             self.local_port = self._driver.forward(self.remote_port)
-            self.url = f"http://localhost:{self.local_port}"
+
+            self._url = f"http://localhost:{self.local_port}"
+            self._session = requests.Session()
+
             self.resolution = self._driver.get_device_resolution(landscape=True)
         except FileNotFoundError:
             raise ScreenshotSetupError(

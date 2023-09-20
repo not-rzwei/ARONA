@@ -29,13 +29,18 @@ Feature: Screenshot using Droidcast Raw
     Given Droidcast server is running on device
     When I setup the screenshot
     Then Droidcast should return the local port number
-    And Have URL for screenshot
 
   Scenario: Error forwarding droidcast port to host on setup
     Given Droidcast server is running on device
     And No local port is available
     When I setup the screenshot
     Then Droidcast should raise an error
+
+# Setup: request session
+  Scenario: Set request session on setup
+    Given Droidcast server is running on device
+    When I setup the screenshot
+    Then Droidcast should set the request session
 
 # Setup: get resolution
   Scenario: Set screenshot resolution on setup
