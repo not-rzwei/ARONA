@@ -47,3 +47,12 @@ Feature: Screenshot using Droidcast Raw
     Given Driver is glitchy
     When I setup the screenshot
     Then Droidcast should raise an error
+
+# Take screenshot
+  Scenario: Take screenshot
+    Given Droidcast server has been setup
+    And Resolution is 1280x720
+    When I take a screenshot
+    Then Droidcast should return ndarray of screenshot
+    And Screenshot should be 1280x720
+    And Has BGR color space
