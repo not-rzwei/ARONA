@@ -1,6 +1,11 @@
 import numpy
 
-from src.interfaces.driver import IDriver, DriverServerError, DriverForwardError
+from src.interfaces.driver import (
+    IDriver,
+    DriverServerError,
+    DriverForwardError,
+    DriverResolutionError,
+)
 from src.interfaces.screenshot import IScreenshot, ScreenshotSetupError
 
 
@@ -11,6 +16,7 @@ class DroidcastRawScreenshot(IScreenshot):
     _apk_path = "bin/droidcast_raw/droidcast_raw.apk"
     _android_path = "/data/local/tmp/droidcast_raw.apk"
 
+    resolution = (0, 0)
     url = ""
     pid = 0
     local_port = 0
@@ -24,6 +30,7 @@ class DroidcastRawScreenshot(IScreenshot):
             )
             self.local_port = self._driver.forward(self.remote_port)
             self.url = f"http://localhost:{self.local_port}"
+            self.resolution = self._driver.get_device_resolution(landscape=True)
         except FileNotFoundError:
             raise ScreenshotSetupError(
                 f"APK file does not exist. Make sure you don't delete {self._apk_path}"
@@ -34,6 +41,8 @@ class DroidcastRawScreenshot(IScreenshot):
             raise ScreenshotSetupError(
                 f"Error forwarding droidcast port {self.remote_port} to {self.local_port}"
             )
+        except DriverResolutionError:
+            raise ScreenshotSetupError("Error getting device resolution")
 
     def take(self) -> numpy.ndarray:
         return numpy.array([])

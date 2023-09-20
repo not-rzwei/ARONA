@@ -36,3 +36,14 @@ Feature: Screenshot using Droidcast Raw
     And No local port is available
     When I setup the screenshot
     Then Droidcast should raise an error
+
+# Setup: get resolution
+  Scenario: Set screenshot resolution on setup
+    Given Device resolution is 720x1280
+    When I setup the screenshot
+    Then Droidcast should set the screenshot resolution to 1280x720
+
+  Scenario: Error setting screenshot resolution on setup
+    Given Driver is glitchy
+    When I setup the screenshot
+    Then Droidcast should raise an error
