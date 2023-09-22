@@ -7,7 +7,7 @@ from src.interfaces.driver import (
     DriverForwardError,
     DriverResolutionError,
 )
-from src.interfaces.screenshot import IScreenshot, ScreenshotSetupError
+from src.interfaces.screenshot import IScreenshot, ScreenshotSetupError, ScreenshotError
 
 
 class DroidcastRawScreenshot(IScreenshot):
@@ -51,4 +51,25 @@ class DroidcastRawScreenshot(IScreenshot):
             raise ScreenshotSetupError("Error getting device resolution")
 
     def take(self) -> numpy.ndarray:
-        return numpy.array([])
+        if self._session is None:
+            raise ScreenshotError("Screenshot has not been setup")
+
+        width, height = self.resolution
+        res = self._session.get(f"{self._url}/screenshot?width={width}&height={height}")
+
+        if res.status_code != 200:
+            raise ScreenshotError("Error taking screenshot")
+
+        image = numpy.frombuffer(res.content, dtype=numpy.uint16)
+        image = image.reshape((width, height))
+        return self._bitmap_byte_array_to_rgb565(image)
+
+    def _bitmap_byte_array_to_rgb565(self, image: numpy.ndarray) -> numpy.ndarray:
+        """Converts a bitmap byte array to a RGB565 numpy array
+        No idea how this works, but it works, so don't touch it
+        """
+        blue_channel = (image & 0x1F) << 3
+        green_channel = ((image >> 5) & 0x3F) << 2
+        red_channel = ((image >> 11) & 0x1F) << 3
+
+        return numpy.dstack((red_channel, green_channel, blue_channel))

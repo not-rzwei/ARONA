@@ -18,15 +18,14 @@ def test_scenario():
 @given("Droidcast server has been setup", target_fixture="screenshot")
 def given1():
     driver = mock.Mock(spec=IDriver)
-    driver.get_device_resolution.return_value = (1280, 720)
-
     screenshot = DroidcastRawScreenshot(driver)
+
+    screenshot.resolution = (2, 1)
+    screenshot._session = mock.Mock()
+    screenshot._session.get.return_value.status_code = 200
+    screenshot._session.get.return_value.content = b"\xFF\x00\x1F\x07"
+
     return screenshot
-
-
-@given("Resolution is 1280x720")
-def given2(screenshot: DroidcastRawScreenshot):
-    pass
 
 
 @when("I take a screenshot", target_fixture="result")
@@ -36,14 +35,4 @@ def when1(screenshot: DroidcastRawScreenshot):
 
 @then("Droidcast should return ndarray of screenshot")
 def then1(result: np.ndarray):
-    assert True
-
-
-@then("Screenshot should be 1280x720")
-def then2(result: np.ndarray):
-    assert True
-
-
-@then("Has BGR color space")
-def then3(result: np.ndarray):
-    assert True
+    assert result.shape == (2, 1, 3)
