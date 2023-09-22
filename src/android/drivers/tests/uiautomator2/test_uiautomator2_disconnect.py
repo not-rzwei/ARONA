@@ -32,8 +32,3 @@ def when1(driver: UiAutomator2Driver):
 @then("Driver state should be disconnected")
 def then1(driver: UiAutomator2Driver):
     assert driver.state == DriverState.DISCONNECTED
-
-
-@then("Device property should be None")
-def then2(driver: UiAutomator2Driver):
-    assert driver.device is None

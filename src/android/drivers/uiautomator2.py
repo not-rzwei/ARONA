@@ -19,7 +19,7 @@ from src.interfaces.driver import (
 class UiAutomator2Driver(IDriver):
     """Driver for UiAutomator2."""
 
-    device: Optional[uiautomator2.Device]
+    device: uiautomator2.Device
 
     def __init__(self, u2, serial: str):
         """
@@ -40,13 +40,10 @@ class UiAutomator2Driver(IDriver):
 
     def disconnect(self) -> None:
         # TODO: Implement proper disconnect
-        self.device = None
         self.state = DriverState.DISCONNECTED
 
     @auto_recovery
     def execute(self, command: str) -> Tuple[str, int]:
-        if self.device is None:
-            raise DriverConnectionError("Device is not connected")
         try:
             output, exit_code = self.device.shell(command)
             output = output.rstrip("\n")
@@ -56,9 +53,6 @@ class UiAutomator2Driver(IDriver):
 
     @auto_recovery
     def run_daemon(self, command: str) -> int:
-        if self.device is None:
-            raise DriverConnectionError("Device is not connected")
-
         try:
             resp = self.device.http.post("/shell/background", data={"command": command})
 
@@ -83,9 +77,6 @@ class UiAutomator2Driver(IDriver):
 
     @auto_recovery
     def push(self, src: str, dst: str):
-        if self.device is None:
-            raise DriverConnectionError("Device is not connected")
-
         try:
             with open(src, "rb") as f:
                 self.device.push(f, dst)
@@ -97,8 +88,6 @@ class UiAutomator2Driver(IDriver):
     # noinspection PyProtectedMember
     @auto_recovery
     def forward(self, remote: int, local: Optional[int] = None) -> int:
-        if self.device is None:
-            raise DriverConnectionError("Device is not connected")
         try:
             if local is not None:
                 return self.device._adb_device.forward(remote, local)
@@ -110,9 +99,6 @@ class UiAutomator2Driver(IDriver):
             raise DriverConnectionError("Device is not connected", e)
 
     def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
-        if self.device is None:
-            raise DriverConnectionError("Device is not connected")
-
         resolution = self.device.device_info.get("display", {})
         width = resolution.get("width", 0)
         height = resolution.get("height", 0)
