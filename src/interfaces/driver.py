@@ -107,6 +107,15 @@ class IDriver(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def release_port(self, local: int) -> bool:
+        """Release forwarded port on local machine.
+
+        Args:
+            local (int): Port on local machine.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
         """Get device resolution.
 

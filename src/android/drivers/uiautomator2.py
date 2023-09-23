@@ -92,6 +92,9 @@ class UiAutomator2Driver(IDriver):
         except AdbError as e:
             raise DriverConnectionError("Device is not connected", e)
 
+    def release_port(self, local: int) -> bool:
+        return True
+
     def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
         resolution = self.device.device_info.get("display", {})
         width = resolution.get("width", 0)
