@@ -92,8 +92,15 @@ class UiAutomator2Driver(IDriver):
         except AdbError as e:
             raise DriverConnectionError("Device is not connected", e)
 
+    # noinspection PyProtectedMember
     def release_port(self, local: int) -> bool:
-        return True
+        try:
+            self.device._adb_device.open_transport(f"killforward:tcp:{local}")
+            return True
+        except RuntimeError as e:
+            raise DriverForwardError(f"Cannot release port {local}", e)
+        except AdbError as e:
+            raise DriverConnectionError("Cannot release unlisted port", e)
 
     def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
         resolution = self.device.device_info.get("display", {})
