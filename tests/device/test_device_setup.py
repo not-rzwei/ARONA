@@ -30,6 +30,7 @@ def given1():
     container = CoreDeviceContainer()
     device = container.device()
     yield device
+    device.teardown()
 
 
 @when("I connect to the device")

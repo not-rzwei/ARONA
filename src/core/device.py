@@ -16,3 +16,8 @@ class CoreDevice:
             self.touch.setup()
         except:
             raise
+
+    def teardown(self):
+        self.touch.teardown()
+        self.screenshot.teardown()
+        self.driver.disconnect()
