@@ -25,7 +25,6 @@ class UiAutomator2Driver(IDriver):
         """
 
         Args:
-            u2 (uiautomator2): uiautomator2 package
             serial (str): Android device serial address
         """
         self.serial = serial
@@ -81,7 +80,7 @@ class UiAutomator2Driver(IDriver):
                 self.device.push(f, dst)
         except FileNotFoundError:
             raise FileNotFoundError(f"File {src} not found")
-        except IOError as e:
+        except IOError:
             raise DriverPushError("Failed to push file")
 
     # noinspection PyProtectedMember
@@ -89,7 +88,8 @@ class UiAutomator2Driver(IDriver):
     def forward(self, remote: int, local: Optional[int] = None) -> int:
         try:
             if local is not None:
-                return self.device._adb_device.forward(remote, local)
+                self.device._adb_device.forward(f"tcp:{remote}", f"tcp:{local}")
+                return local
 
             return self.device._adb_device.forward_port(remote)
         except RuntimeError as e:
