@@ -17,11 +17,11 @@ def test_scenario():
 
 
 @pytest.fixture
-def driver():
-    u2 = mock.Mock(spec=uiautomator2)
+def driver(mocker):
+    mocker.patch("uiautomator2.connect_adb_wifi")
     serial = "127.0.0.1:16448"
 
-    dev = UiAutomator2Driver(u2, serial)  # type: ignore
+    dev = UiAutomator2Driver(serial)
     return dev
 
 

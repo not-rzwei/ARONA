@@ -1,5 +1,3 @@
-from unittest import mock
-
 import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
@@ -17,12 +15,11 @@ def test_scenario():
 
 
 @given("Device serial address is unreachable", target_fixture="driver")
-def given1():
-    u2 = mock.Mock(spec=uiautomator2)
-    u2.connect_adb_wifi.side_effect = uiautomator2.ConnectError
+def given1(mocker):
+    mocker.patch("uiautomator2.connect_adb_wifi", side_effect=uiautomator2.ConnectError)
 
     serial = "127.0.0.1:6969"
-    dev = UiAutomator2Driver(u2, serial)  # type: ignore
+    dev = UiAutomator2Driver(serial)
     return dev
 
 

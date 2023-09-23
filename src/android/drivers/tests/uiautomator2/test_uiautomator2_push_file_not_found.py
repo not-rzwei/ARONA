@@ -19,12 +19,12 @@ def test_scenario():
     "Driver is already connected to the device",
     target_fixture="driver",
 )
-def given1():
-    u2 = mock.Mock(spec=uiautomator2)
+def given1(mocker):
+    mocker.patch("uiautomator2.connect_adb_wifi")
     serial = "127.0.0.1:16448"
 
     device = mock.Mock(spec=uiautomator2.Device)
-    dev = UiAutomator2Driver(u2, serial)  # type: ignore
+    dev = UiAutomator2Driver(serial)
     dev.device = device
     return dev
 

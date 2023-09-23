@@ -21,19 +21,18 @@ class UiAutomator2Driver(IDriver):
 
     device: uiautomator2.Device
 
-    def __init__(self, u2, serial: str):
+    def __init__(self, serial: str):
         """
 
         Args:
             u2 (uiautomator2): uiautomator2 package
             serial (str): Android device serial address
         """
-        self.u2 = u2
         self.serial = serial
 
     def connect(self) -> None:
         try:
-            self.device = self.u2.connect_adb_wifi(self.serial)
+            self.device = uiautomator2.connect_adb_wifi(self.serial)
             self.state = DriverState.CONNECTED
         except uiautomator2.ConnectError:
             raise DriverConnectionError(f"Failed to connect to {self.serial}")
