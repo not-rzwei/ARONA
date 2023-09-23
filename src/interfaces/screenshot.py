@@ -7,7 +7,11 @@ class ScreenshotError(Exception):
     pass
 
 
-class ScreenshotSetupError(Exception):
+class ScreenshotSetupError(ScreenshotError):
+    pass
+
+
+class ScreenshotTakeError(ScreenshotError):
     pass
 
 
@@ -22,4 +26,9 @@ class IScreenshot(ABC):
     @abstractmethod
     def take(self) -> numpy.ndarray:
         """Take a screenshot and return it as a numpy array"""
+        raise NotImplementedError
+
+    @abstractmethod
+    def teardown(self) -> None:
+        """Teardown the setup"""
         raise NotImplementedError

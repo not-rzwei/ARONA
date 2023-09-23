@@ -8,7 +8,11 @@ from src.interfaces.driver import (
     DriverForwardError,
     DriverResolutionError,
 )
-from src.interfaces.screenshot import IScreenshot, ScreenshotSetupError, ScreenshotError
+from src.interfaces.screenshot import (
+    IScreenshot,
+    ScreenshotSetupError,
+    ScreenshotTakeError,
+)
 
 
 class DroidcastRawScreenshot(IScreenshot):
@@ -51,15 +55,18 @@ class DroidcastRawScreenshot(IScreenshot):
         except DriverResolutionError:
             raise ScreenshotSetupError("Error getting device resolution")
 
+    def teardown(self) -> None:
+        pass
+
     def take(self) -> numpy.ndarray:
         if self._session is None:
-            raise ScreenshotError("Screenshot has not been setup")
+            raise ScreenshotTakeError("Screenshot has not been setup")
 
         width, height = self.resolution
         res = self._session.get(f"{self._url}/screenshot?width={width}&height={height}")
 
         if res.status_code != 200:
-            raise ScreenshotError("Error taking screenshot")
+            raise ScreenshotTakeError("Error taking screenshot")
 
         image = numpy.frombuffer(res.content, dtype=numpy.uint16)
         image = image.reshape((width, height))
