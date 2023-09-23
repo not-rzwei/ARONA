@@ -7,11 +7,13 @@ from src.interfaces.driver import (
     DriverServerError,
     DriverForwardError,
     DriverResolutionError,
+    DriverCommandError,
 )
 from src.interfaces.screenshot import (
     IScreenshot,
     ScreenshotSetupError,
     ScreenshotTakeError,
+    ScreenshotTeardownError,
 )
 
 
@@ -56,7 +58,19 @@ class DroidcastRawScreenshot(IScreenshot):
             raise ScreenshotSetupError("Error getting device resolution")
 
     def teardown(self) -> None:
-        pass
+        try:
+            _, exit_code = self._driver.execute(f"kill {self.pid}")
+            if exit_code == 0:
+                self.pid = 0
+
+            if self._driver.release_port(self.local_port):
+                self.local_port = 0
+        except DriverCommandError:
+            raise ScreenshotTeardownError("Error killing droidcast raw server")
+        except DriverForwardError:
+            raise ScreenshotTeardownError(
+                f"Error releasing droidcast port {self.local_port}"
+            )
 
     def take(self) -> numpy.ndarray:
         if self._session is None:

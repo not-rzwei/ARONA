@@ -15,6 +15,10 @@ class ScreenshotTakeError(ScreenshotError):
     pass
 
 
+class ScreenshotTeardownError(ScreenshotError):
+    pass
+
+
 class IScreenshot(ABC):
     """Screenshot interface"""
 

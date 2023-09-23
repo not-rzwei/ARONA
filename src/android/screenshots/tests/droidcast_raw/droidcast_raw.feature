@@ -58,3 +58,10 @@ Feature: Screenshot using Droidcast Raw
     Given Droidcast server has been setup
     When I take a screenshot
     Then Droidcast should return ndarray of screenshot
+
+# Teardown
+  Scenario: Teardown setup
+    Given Droidcast server has been setup
+    When I teardown the screenshot
+    Then Droidcast server PID should be unset
+    And Local port should be released
