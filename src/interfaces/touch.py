@@ -1,6 +1,22 @@
 from abc import ABC, abstractmethod
 
 
+class TouchError(Exception):
+    pass
+
+
+class TouchSetupError(TouchError):
+    pass
+
+
+class TouchTapError(TouchError):
+    pass
+
+
+class TouchSwipeError(TouchError):
+    pass
+
+
 class ITouch(ABC):
     """Touch interface"""
 
@@ -22,4 +38,9 @@ class ITouch(ABC):
         duration: float,
     ) -> None:
         """Swipe from one point to another"""
+        raise NotImplementedError
+
+    @abstractmethod
+    def teardown(self) -> None:
+        """Teardown the setup"""
         raise NotImplementedError

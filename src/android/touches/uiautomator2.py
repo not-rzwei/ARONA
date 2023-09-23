@@ -11,6 +11,9 @@ class UiAutomator2Touch(ITouch):
     def setup(self) -> None:
         self.driver.connect()
 
+    def teardown(self) -> None:
+        pass
+
     def tap(self, point: tuple[int, int]) -> None:
         self.driver.device.click(point[0], point[1])
 
