@@ -1,6 +1,7 @@
 import numpy
 import requests
 
+from src.constants.path import BIN_FOLDER
 from src.interfaces.driver import (
     IDriver,
     DriverServerError,
@@ -14,7 +15,7 @@ class DroidcastRawScreenshot(IScreenshot):
     def __init__(self, driver: IDriver):
         self._driver = driver
 
-    _apk_path = "bin/droidcast_raw/droidcast_raw.apk"
+    _apk_path = BIN_FOLDER / "droidcast_raw/droidcast_raw.apk"
     _android_path = "/data/local/tmp/droidcast_raw.apk"
 
     _url = ""
@@ -27,7 +28,7 @@ class DroidcastRawScreenshot(IScreenshot):
 
     def setup(self) -> None:
         try:
-            self._driver.push(self._apk_path, self._android_path)
+            self._driver.push(self._apk_path.__str__(), self._android_path)
             self.pid = self._driver.run_daemon(
                 f"CLASSPATH={self._android_path} app_process / ink.mol.droidcast_raw.Main --port={self.remote_port}"
             )
