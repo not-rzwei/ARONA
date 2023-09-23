@@ -5,6 +5,11 @@ class ITouch(ABC):
     """Touch interface"""
 
     @abstractmethod
+    def setup(self) -> None:
+        """Setup something for the touch to work"""
+        raise NotImplementedError
+
+    @abstractmethod
     def tap(self, point: tuple[int, int]) -> None:
         """Tap a point on the screen"""
         raise NotImplementedError
