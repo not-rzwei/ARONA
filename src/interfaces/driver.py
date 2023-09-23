@@ -1,4 +1,3 @@
-import functools
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Optional, Tuple
@@ -11,51 +10,36 @@ class DriverState(Enum):
     DISCONNECTED = 0
 
 
-class DriverConnectionError(Exception):
+class DriverError(Exception):
     pass
 
 
-class DriverRetryError(Exception):
+class DriverConnectionError(DriverError):
     pass
 
 
-class DriverCommandError(Exception):
+class DriverRetryError(DriverError):
     pass
 
 
-class DriverServerError(Exception):
+class DriverCommandError(DriverError):
     pass
 
 
-class DriverPushError(Exception):
+class DriverServerError(DriverError):
     pass
 
 
-class DriverForwardError(Exception):
+class DriverPushError(DriverError):
     pass
 
 
-class DriverResolutionError(Exception):
+class DriverForwardError(DriverError):
     pass
 
 
-def auto_recovery(func, max_retry=3):
-    @functools.wraps(func)
-    def wrapper(self: IDriver, *args, **kwargs):
-        for _ in range(max_retry):
-            try:
-                return func(self, *args, **kwargs)
-            except DriverConnectionError:
-                self.connect()
-                if self.state == DriverState.CONNECTED:
-                    break
-
-        else:
-            raise DriverRetryError("Max retry exceeded")
-
-        return func(self, *args, **kwargs)
-
-    return wrapper
+class DriverResolutionError(DriverError):
+    pass
 
 
 class IDriver(ABC):

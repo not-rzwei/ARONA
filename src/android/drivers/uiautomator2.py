@@ -5,7 +5,6 @@ from adbutils import AdbError
 
 from src.interfaces.driver import (
     IDriver,
-    auto_recovery,
     DriverState,
     DriverConnectionError,
     DriverCommandError,
@@ -40,7 +39,6 @@ class UiAutomator2Driver(IDriver):
         # TODO: Implement proper disconnect
         self.state = DriverState.DISCONNECTED
 
-    @auto_recovery
     def execute(self, command: str) -> Tuple[str, int]:
         try:
             output, exit_code = self.device.shell(command)
@@ -49,7 +47,6 @@ class UiAutomator2Driver(IDriver):
         except RuntimeError as e:
             raise DriverCommandError(e)
 
-    @auto_recovery
     def run_daemon(self, command: str) -> int:
         try:
             resp = self.device.http.post("/shell/background", data={"command": command})
@@ -73,7 +70,6 @@ class UiAutomator2Driver(IDriver):
                 f"ATX server returned invalid json for command {command}"
             )
 
-    @auto_recovery
     def push(self, src: str, dst: str):
         try:
             with open(src, "rb") as f:
@@ -84,7 +80,6 @@ class UiAutomator2Driver(IDriver):
             raise DriverPushError("Failed to push file")
 
     # noinspection PyProtectedMember
-    @auto_recovery
     def forward(self, remote: int, local: Optional[int] = None) -> int:
         try:
             if local is not None:
