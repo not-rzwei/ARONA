@@ -59,7 +59,7 @@ class DroidcastRawScreenshot(IScreenshot):
 
     def teardown(self) -> None:
         try:
-            _, exit_code = self._driver.execute(f"kill {self.pid}")
+            _, exit_code = self._driver.execute(f"pkill -P {self.pid}")
             if exit_code == 0:
                 self.pid = 0
 
