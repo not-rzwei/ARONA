@@ -1,4 +1,6 @@
-from src.interfaces.driver import IDriver, DriverError
+import numpy as np
+
+from src.interfaces.driver import IDriver, DriverError, DriverDeviceOrientation
 from src.interfaces.screenshot import IScreenshot, ScreenshotError
 from src.interfaces.touch import ITouch, TouchError
 
@@ -44,3 +46,21 @@ class CoreDevice:
             self._driver.disconnect()
         except:
             pass
+
+    def screenshot(self) -> np.ndarray:
+        ss = self._screenshot.take()
+        ss_height, ss_width, _ = ss.shape
+        ss_orientation = 0 if ss_height > ss_width else 1
+
+        # TODO: Make the target orientation configurable
+        target = DriverDeviceOrientation.LANDSCAPE
+        device = self._driver.get_device_orientation()
+
+        # Calculate total rotation needed to rotate screenshot to target orientation
+        # 1. Rotate screenshot to device orientation
+        # 2. Rotate screenshot to target orientation
+        image_to_device_rotation = (device.value - ss_orientation) % 4
+        device_to_target_rotation = (target.value - device.value) % 4
+        total_rotation = (image_to_device_rotation + device_to_target_rotation) % 4
+
+        return np.rot90(ss, total_rotation * -1)

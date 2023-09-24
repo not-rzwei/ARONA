@@ -20,3 +20,9 @@ Feature: Device
     Given The device is provided
     When I connect to the device
     Then I got an screenshot error message
+
+  Scenario: Take screenshot in landscape mode
+    Given The device is connected
+    When I take a screenshot
+    Then I got a screenshot
+    And The resolution is match the device resolution in landscape mode
