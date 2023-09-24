@@ -1,5 +1,5 @@
-from src.interfaces.driver import IDriver, DriverState
-from src.interfaces.touch import ITouch
+from src.interfaces.driver import IDriver, DriverState, DriverConnectionError
+from src.interfaces.touch import ITouch, TouchSetupError
 
 
 class ShellInputTouch(ITouch):
@@ -7,11 +7,13 @@ class ShellInputTouch(ITouch):
         self.driver = driver
 
     def setup(self) -> None:
-        pass
+        try:
+            if self.driver.state == DriverState.DISCONNECTED:
+                self.driver.connect()
+        except DriverConnectionError as e:
+            raise TouchSetupError(e)
 
     def tap(self, point: tuple[int, int]) -> None:
-        if self.driver.state == DriverState.DISCONNECTED:
-            self.driver.connect()
         self.driver.execute(f"input tap {point[0]} {point[1]}")
 
     def swipe(
