@@ -1,4 +1,5 @@
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
+from src.interfaces.driver import DriverState
 from src.interfaces.touch import ITouch
 
 
@@ -9,7 +10,8 @@ class UiAutomator2Touch(ITouch):
         self.driver = driver
 
     def setup(self) -> None:
-        self.driver.connect()
+        if self.driver.state == DriverState.DISCONNECTED:
+            self.driver.connect()
 
     def teardown(self) -> None:
         pass

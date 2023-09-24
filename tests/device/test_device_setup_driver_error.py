@@ -16,8 +16,12 @@ def test_scenario():
     pass
 
 
+@given("The driver is uiautomator2")
+@given("Screenshot method is droidcast raw")
+@given("Touch method is uiautomator2")
 class CoreDeviceContainer(containers.DeclarativeContainer):
-    driver = providers.Singleton(UiAutomator2Driver, "127.0.0.1:16969")
+    serial_address = providers.Object("127.0.0.1:16448")
+    driver = providers.Singleton(UiAutomator2Driver, serial_address)
     screenshot = providers.Singleton(DroidcastRawScreenshot, driver=driver)
     touch = providers.Singleton(UiAutomator2Touch, driver=driver)
     device = providers.Factory(
@@ -25,9 +29,11 @@ class CoreDeviceContainer(containers.DeclarativeContainer):
     )
 
 
-@given("I provide the driver, screenshot and touch method", target_fixture="device")
+@given("The device serial address is invalid", target_fixture="device")
 def given1():
     container = CoreDeviceContainer()
+    container.serial_address.override(providers.Object("127.0.0.1:6969"))
+
     device = container.device()
     yield device
     device.disconnect()

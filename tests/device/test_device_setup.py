@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from dependency_injector import containers, providers
 from pytest_bdd import scenario, when, then, given
@@ -16,8 +18,12 @@ def test_scenario():
     pass
 
 
+@given("The driver is uiautomator2")
+@given("Screenshot method is droidcast raw")
+@given("Touch method is uiautomator2")
 class CoreDeviceContainer(containers.DeclarativeContainer):
-    driver = providers.Singleton(UiAutomator2Driver, "127.0.0.1:16448")
+    serial_address = providers.Object("127.0.0.1:16448")
+    driver = providers.Singleton(UiAutomator2Driver, serial_address)
     screenshot = providers.Singleton(DroidcastRawScreenshot, driver=driver)
     touch = providers.Singleton(UiAutomator2Touch, driver=driver)
     device = providers.Factory(
@@ -25,7 +31,7 @@ class CoreDeviceContainer(containers.DeclarativeContainer):
     )
 
 
-@given("I provide the driver, screenshot and touch method", target_fixture="device")
+@given("The device is provided", target_fixture="device")
 def given1():
     container = CoreDeviceContainer()
     device = container.device()
@@ -45,4 +51,6 @@ def then1(device: CoreDevice):
 
 @then("I can touch the screen")
 def then2(device: CoreDevice):
+    time.sleep(1)
     device.touch.tap((100, 100))
+    time.sleep(1)
