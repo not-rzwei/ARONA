@@ -12,6 +12,7 @@ from src.interfaces.driver import (
     DriverPushError,
     DriverForwardError,
     DriverResolutionError,
+    DriverError,
 )
 
 
@@ -32,6 +33,7 @@ class UiAutomator2Driver(IDriver):
         try:
             self.device = uiautomator2.connect_adb_wifi(self.serial)
             self.device.set_new_command_timeout(30)
+            self.device.debug = True
             self.state = DriverState.CONNECTED
         except uiautomator2.ConnectError:
             raise DriverConnectionError(f"Failed to connect to {self.serial}")
@@ -39,9 +41,17 @@ class UiAutomator2Driver(IDriver):
     # noinspection PyProtectedMember
     def disconnect(self) -> None:
         """Disconnect from the device.
-        ATX server will be left running on the device but local port will be released.
+        Cleanup the device by killing the atx-agent and releasing the port.
         """
-        self.state = DriverState.DISCONNECTED
+        try:
+            self.state = DriverState.DISCONNECTED
+            self.device._adb_device.shell("pkill -f atx-agent")
+
+            atx_url = self.device._get_atx_agent_url()
+            port = atx_url.split(":")[-1]
+            self.release_port(int(port))
+        except (DriverError, AdbError) as e:
+            raise DriverConnectionError("Failed to disconnect", e)
 
     def execute(self, command: str) -> Tuple[str, int]:
         try:
