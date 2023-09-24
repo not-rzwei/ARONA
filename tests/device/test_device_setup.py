@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 from dependency_injector import containers, providers
 from pytest_bdd import scenario, when, then, given
@@ -51,6 +49,4 @@ def then1(device: CoreDevice):
 
 @then("I can touch the screen")
 def then2(device: CoreDevice):
-    time.sleep(1)
     device.touch.tap((100, 100))
-    time.sleep(1)
