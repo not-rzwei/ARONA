@@ -1,6 +1,14 @@
-from src.interfaces.driver import IDriver
+from src.interfaces.driver import IDriver, DriverError
 from src.interfaces.screenshot import IScreenshot
 from src.interfaces.touch import ITouch
+
+
+class CoreDeviceError(Exception):
+    pass
+
+
+class CoreDeviceDriverError(CoreDeviceError):
+    pass
 
 
 class CoreDevice:
@@ -9,15 +17,18 @@ class CoreDevice:
         self.screenshot = screenshot
         self.touch = touch
 
-    def setup(self):
+    def connect(self):
         try:
             self.driver.connect()
             self.screenshot.setup()
             self.touch.setup()
-        except:
-            raise
+        except DriverError as e:
+            raise CoreDeviceDriverError(e)
 
-    def teardown(self):
-        self.touch.teardown()
-        self.screenshot.teardown()
-        self.driver.disconnect()
+    def disconnect(self):
+        try:
+            self.touch.teardown()
+            self.screenshot.teardown()
+            self.driver.disconnect()
+        except:
+            pass
