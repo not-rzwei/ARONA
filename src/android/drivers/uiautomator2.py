@@ -13,6 +13,7 @@ from src.interfaces.driver import (
     DriverForwardError,
     DriverResolutionError,
     DriverError,
+    DriverDeviceOrientation,
 )
 
 
@@ -33,7 +34,6 @@ class UiAutomator2Driver(IDriver):
         try:
             self.device = uiautomator2.connect_adb_wifi(self.serial)
             self.device.set_new_command_timeout(30)
-            self.device.debug = True
             self.state = DriverState.CONNECTED
         except uiautomator2.ConnectError:
             raise DriverConnectionError(f"Failed to connect to {self.serial}")
@@ -116,7 +116,7 @@ class UiAutomator2Driver(IDriver):
         except AdbError as e:
             raise DriverConnectionError("Cannot release unlisted port", e)
 
-    def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
+    def get_device_resolution(self, respect_orientation=True) -> Tuple[int, int]:
         resolution = self.device.device_info.get("display", {})
         width = resolution.get("width", 0)
         height = resolution.get("height", 0)
@@ -124,7 +124,20 @@ class UiAutomator2Driver(IDriver):
         if width == 0 or height == 0:
             raise DriverResolutionError("Failed to get device resolution")
 
-        if landscape and width < height:
-            return height, width
+        if respect_orientation:
+            orientation = self.get_device_orientation()
+            if orientation.value in (1, 3):
+                return height, width
 
         return width, height
+
+    def get_device_orientation(self) -> DriverDeviceOrientation:
+        try:
+            orientation, exit_code = self.execute(
+                "dumpsys display | grep orientation | awk -F 'orientation=' '{print $2}' | cut -d ',' -f 1"
+            )
+            if exit_code != 0:
+                raise DriverCommandError("Failed to get screen orientation")
+            return DriverDeviceOrientation(int(orientation))
+        except DriverCommandError:
+            raise DriverCommandError("Failed to get screen orientation")

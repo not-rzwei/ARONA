@@ -10,6 +10,15 @@ class DriverState(Enum):
     DISCONNECTED = 0
 
 
+class DriverDeviceOrientation(Enum):
+    """Enum for screen orientation."""
+
+    PORTRAIT = 0
+    LANDSCAPE = 1
+    REVERSE_PORTRAIT = 2
+    REVERSE_LANDSCAPE = 3
+
+
 class DriverError(Exception):
     pass
 
@@ -116,13 +125,17 @@ class IDriver(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_device_resolution(self, landscape: bool = True) -> Tuple[int, int]:
+    def get_device_resolution(self, respect_orientation: bool) -> Tuple[int, int]:
         """Get device resolution.
 
         Args:
-            landscape (bool, optional): Get resolution in landscape mode. Defaults to True.
+            respect_orientation (bool): Respect device orientation.
 
         Returns:
             Tuple[int, int]: Device resolution. Width, height.
         """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_device_orientation(self) -> DriverDeviceOrientation:
         raise NotImplementedError

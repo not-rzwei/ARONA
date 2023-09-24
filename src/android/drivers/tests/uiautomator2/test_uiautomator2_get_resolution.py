@@ -5,6 +5,7 @@ import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
+from src.interfaces.driver import DriverDeviceOrientation
 
 
 @scenario(
@@ -25,20 +26,27 @@ def driver(mocker):
 
 
 @given("Device resolution is 720x1280")
-def given1(mocker, driver):
+def given1(driver):
     device = mock.MagicMock(spec=uiautomator2.Device)
     mock_resolution = {
-        "width": 720,
-        "height": 1280,
+        "width": 1280,
+        "height": 720,
     }
     device.device_info.get.return_value = mock_resolution
 
     driver.device = device
 
 
+@given("Device is in landscape mode")
+def given2(driver):
+    orientation = mock.MagicMock(spec=DriverDeviceOrientation)
+    orientation.value = 1
+    driver.get_device_orientation = orientation
+
+
 @when("I get device resolution in landscape", target_fixture="result")
 def when1(driver: UiAutomator2Driver):
-    return driver.get_device_resolution(landscape=True)
+    return driver.get_device_resolution()
 
 
 @then("Driver should return a resolution of 1280x720")

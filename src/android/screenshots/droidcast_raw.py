@@ -8,6 +8,7 @@ from src.interfaces.driver import (
     DriverForwardError,
     DriverResolutionError,
     DriverCommandError,
+    DriverDeviceOrientation,
 )
 from src.interfaces.screenshot import (
     IScreenshot,
@@ -27,6 +28,7 @@ class DroidcastRawScreenshot(IScreenshot):
     _url = ""
     _session = None
 
+    orientation = DriverDeviceOrientation.PORTRAIT
     resolution = (0, 0)
     pid = 0
     local_port = 0
@@ -43,7 +45,10 @@ class DroidcastRawScreenshot(IScreenshot):
             self._url = f"http://localhost:{self.local_port}"
             self._session = requests.Session()
 
-            self.resolution = self._driver.get_device_resolution(landscape=True)
+            self.resolution = self._driver.get_device_resolution(
+                respect_orientation=True
+            )
+            self.orientation = self._driver.get_device_orientation()
         except FileNotFoundError:
             raise ScreenshotSetupError(
                 f"APK file does not exist. Make sure you don't delete {self._apk_path}"
@@ -77,6 +82,7 @@ class DroidcastRawScreenshot(IScreenshot):
             raise ScreenshotTakeError("Screenshot has not been setup")
 
         width, height = self.resolution
+
         res = self._session.get(f"{self._url}/screenshot?width={width}&height={height}")
 
         if res.status_code != 200:

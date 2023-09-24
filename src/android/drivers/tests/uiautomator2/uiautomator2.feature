@@ -91,6 +91,7 @@ Feature: UIAutomator2 driver for Android
 # Get device resolution
   Scenario: Get device resolution in landscape mode
     Given Device resolution is 720x1280
+    And Device is in landscape mode
     When I get device resolution in landscape
     Then Driver should return a resolution of 1280x720
 
