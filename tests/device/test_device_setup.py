@@ -4,7 +4,7 @@ from pytest_bdd import scenario, when, then, given
 
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
 from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
-from src.android.touches.uiautomator2 import UiAutomator2Touch
+from src.android.touches.shell_input import ShellInputTouch
 from src.core.device import CoreDevice
 
 
@@ -18,12 +18,12 @@ def test_scenario():
 
 @given("The driver is uiautomator2")
 @given("Screenshot method is droidcast raw")
-@given("Touch method is uiautomator2")
+@given("Touch method is shell input")
 class CoreDeviceContainer(containers.DeclarativeContainer):
     serial_address = providers.Object("127.0.0.1:16448")
     driver = providers.Singleton(UiAutomator2Driver, serial_address)
     screenshot = providers.Singleton(DroidcastRawScreenshot, driver=driver)
-    touch = providers.Singleton(UiAutomator2Touch, driver=driver)
+    touch = providers.Singleton(ShellInputTouch, driver=driver)
     device = providers.Factory(
         CoreDevice, driver=driver, screenshot=screenshot, touch=touch
     )
@@ -49,4 +49,4 @@ def then1(device: CoreDevice):
 
 @then("I can touch the screen")
 def then2(device: CoreDevice):
-    device.touch.tap((100, 100))
+    device.touch.tap((50, 50))

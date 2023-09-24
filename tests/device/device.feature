@@ -3,7 +3,7 @@ Feature: Device
   Background:
     Given The driver is uiautomator2
     And Screenshot method is droidcast raw
-    And Touch method is uiautomator2
+    And Touch method is shell input
 
   Scenario: Connect to Device
     Given The device is provided
