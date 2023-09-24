@@ -1,5 +1,5 @@
 from src.interfaces.driver import IDriver, DriverError
-from src.interfaces.screenshot import IScreenshot
+from src.interfaces.screenshot import IScreenshot, ScreenshotError
 from src.interfaces.touch import ITouch
 
 
@@ -8,6 +8,10 @@ class CoreDeviceError(Exception):
 
 
 class CoreDeviceDriverError(CoreDeviceError):
+    pass
+
+
+class CoreDeviceScreenshotError(CoreDeviceError):
     pass
 
 
@@ -24,6 +28,8 @@ class CoreDevice:
             self.touch.setup()
         except DriverError as e:
             raise CoreDeviceDriverError(e)
+        except ScreenshotError as e:
+            raise CoreDeviceScreenshotError(e)
 
     def disconnect(self):
         try:

@@ -43,11 +43,6 @@ class UiAutomator2Driver(IDriver):
         """
         self.state = DriverState.DISCONNECTED
 
-        atx_url = self.device._get_atx_agent_url()
-        port = atx_url.split(":")[-1]
-
-        self.release_port(int(port))
-
     def execute(self, command: str) -> Tuple[str, int]:
         try:
             output, exit_code = self.device.shell(command)
