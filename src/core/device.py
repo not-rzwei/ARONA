@@ -21,15 +21,15 @@ class CoreDeviceTouchError(CoreDeviceError):
 
 class CoreDevice:
     def __init__(self, driver: IDriver, screenshot: IScreenshot, touch: ITouch):
-        self.driver = driver
-        self.screenshot = screenshot
-        self.touch = touch
+        self._driver = driver
+        self._screenshot = screenshot
+        self._touch = touch
 
     def connect(self):
         try:
-            self.driver.connect()
-            self.screenshot.setup()
-            self.touch.setup()
+            self._driver.connect()
+            self._screenshot.setup()
+            self._touch.setup()
         except DriverError as e:
             raise CoreDeviceDriverError(e)
         except ScreenshotError as e:
@@ -39,8 +39,8 @@ class CoreDevice:
 
     def disconnect(self):
         try:
-            self.touch.teardown()
-            self.screenshot.teardown()
-            self.driver.disconnect()
+            self._touch.teardown()
+            self._screenshot.teardown()
+            self._driver.disconnect()
         except:
             pass

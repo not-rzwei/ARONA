@@ -29,11 +29,12 @@ class CoreDeviceContainer(containers.DeclarativeContainer):
     )
 
 
+# noinspection PyProtectedMember
 @given("The device is provided", target_fixture="device")
 def given1():
     container = CoreDeviceContainer()
     device = container.device()
-    device.screenshot._apk_path = "invalid_path"
+    device._screenshot._apk_path = "invalid_path"
     yield device
     device.disconnect()
 

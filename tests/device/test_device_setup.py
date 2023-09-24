@@ -44,9 +44,9 @@ def when1(device: CoreDevice):
 
 @then("I can take a screenshot")
 def then1(device: CoreDevice):
-    assert isinstance(device.screenshot.take(), np.ndarray)
+    assert isinstance(device._screenshot.take(), np.ndarray)
 
 
 @then("I can touch the screen")
 def then2(device: CoreDevice):
-    device.touch.tap((50, 50))
+    device._touch.tap((50, 50))
