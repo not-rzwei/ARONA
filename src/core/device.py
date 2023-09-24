@@ -22,6 +22,8 @@ class CoreDeviceTouchError(CoreDeviceError):
 
 
 class CoreDevice:
+    orientation: DriverDeviceOrientation
+
     def __init__(self, driver: IDriver, screenshot: IScreenshot, touch: ITouch):
         self._driver = driver
         self._screenshot = screenshot
@@ -32,6 +34,8 @@ class CoreDevice:
             self._driver.connect()
             self._screenshot.setup()
             self._touch.setup()
+
+            self.orientation = self._driver.get_device_orientation()
         except DriverError as e:
             raise CoreDeviceDriverError(e)
         except ScreenshotError as e:
@@ -54,7 +58,7 @@ class CoreDevice:
 
         # TODO: Make the target orientation configurable
         target = DriverDeviceOrientation.LANDSCAPE
-        device = self._driver.get_device_orientation()
+        device = self.orientation
 
         # Calculate total rotation needed to rotate screenshot to target orientation
         # 1. Rotate screenshot to device orientation
