@@ -116,7 +116,7 @@ class UiAutomator2Driver(IDriver):
         except AdbError as e:
             raise DriverConnectionError("Cannot release unlisted port", e)
 
-    def get_device_resolution(self, respect_orientation=True) -> Tuple[int, int]:
+    def get_device_resolution(self) -> Tuple[int, int]:
         resolution = self.device.device_info.get("display", {})
         width = resolution.get("width", 0)
         height = resolution.get("height", 0)
@@ -124,10 +124,9 @@ class UiAutomator2Driver(IDriver):
         if width == 0 or height == 0:
             raise DriverResolutionError("Failed to get device resolution")
 
-        if respect_orientation:
-            orientation = self.get_device_orientation()
-            if orientation.value in (1, 3):
-                return height, width
+        orientation = self.get_device_orientation()
+        if orientation.value in (1, 3):
+            return height, width
 
         return width, height
 

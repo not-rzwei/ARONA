@@ -50,7 +50,7 @@ def then1(device: CoreDevice, result: np.ndarray):
 
 @then("The resolution is match the device resolution in landscape mode")
 def then2(device: CoreDevice, result: np.ndarray):
-    device_resolution = device._driver.get_device_resolution(True)
+    device_resolution = device._driver.get_device_resolution()
     ss_height, ss_width, _ = result.shape
 
     assert (ss_width, ss_height) == device_resolution

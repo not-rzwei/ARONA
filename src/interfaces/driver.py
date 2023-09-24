@@ -125,7 +125,7 @@ class IDriver(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_device_resolution(self, respect_orientation: bool) -> Tuple[int, int]:
+    def get_device_resolution(self) -> Tuple[int, int]:
         """Get device resolution.
 
         Args:
