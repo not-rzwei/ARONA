@@ -35,9 +35,17 @@ class UiAutomator2Driver(IDriver):
         except uiautomator2.ConnectError:
             raise DriverConnectionError(f"Failed to connect to {self.serial}")
 
+    # noinspection PyProtectedMember
     def disconnect(self) -> None:
-        # TODO: Implement proper disconnect
+        """Disconnect from the device.
+        ATX server will be left running on the device but local port will be released.
+        """
         self.state = DriverState.DISCONNECTED
+
+        atx_url = self.device._get_atx_agent_url()
+        port = atx_url.split(":")[-1]
+
+        self.release_port(int(port))
 
     def execute(self, command: str) -> Tuple[str, int]:
         try:

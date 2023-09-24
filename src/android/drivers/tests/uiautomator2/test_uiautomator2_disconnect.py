@@ -1,3 +1,6 @@
+import unittest.mock as mock
+
+import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
@@ -12,12 +15,17 @@ def test_scenario():
     pass
 
 
+# noinspection PyProtectedMember
 @given("Driver is already connected to the device", target_fixture="driver")
 def given1(mocker):
     serial = "127.0.0.1:16448"
-    dev = UiAutomator2Driver(serial)
-    dev.state = DriverState.CONNECTED
-    return dev
+    dev = mock.Mock(spec=uiautomator2.Device)
+    dev._get_atx_agent_url.return_value = "http://localhost:6969"
+
+    driver = UiAutomator2Driver(serial)
+    driver.state = DriverState.CONNECTED
+    driver.device = dev
+    return driver
 
 
 @when("I disconnect from the device")
