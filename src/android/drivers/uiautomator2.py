@@ -1,3 +1,5 @@
+import logging
+from functools import lru_cache
 from typing import Optional, Tuple, Dict
 
 import uiautomator2
@@ -15,6 +17,10 @@ from src.interfaces.driver import (
     DriverError,
     DriverDeviceOrientation,
 )
+
+# Disable uiautomator2 logger as it is too verbose
+uiautomator2.logger.disabled = True
+logging.getLogger("logzero").disabled = True
 
 
 class UiAutomator2Driver(IDriver):
@@ -116,6 +122,7 @@ class UiAutomator2Driver(IDriver):
         except AdbError as e:
             raise DriverConnectionError("Cannot release unlisted port", e)
 
+    @lru_cache(maxsize=1)
     def get_device_resolution(self) -> Tuple[int, int]:
         resolution = self.device.device_info.get("display", {})
         width = resolution.get("width", 0)
@@ -130,6 +137,7 @@ class UiAutomator2Driver(IDriver):
 
         return width, height
 
+    @lru_cache(maxsize=1)
     def get_device_orientation(self) -> DriverDeviceOrientation:
         try:
             orientation, exit_code = self.execute(
