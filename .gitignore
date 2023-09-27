@@ -162,3 +162,8 @@ cython_debug/
 dump/
 playground/
 .vscode/
+
+**/tests/**/*.jpg
+**/tests/**/*.png
+
+logs/
