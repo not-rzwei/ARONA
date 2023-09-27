@@ -20,6 +20,7 @@ def given1(mocker):
 
     serial = "127.0.0.1:6969"
     dev = UiAutomator2Driver(serial)
+    dev.connect = mocker.Mock(side_effect=DriverConnectionError)
     return dev
 
 
