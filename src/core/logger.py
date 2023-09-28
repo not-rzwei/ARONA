@@ -11,11 +11,17 @@ if not os.path.exists(LOG_FOLDER):
 loguru_logger.remove()
 
 if os.environ.get("DEBUG"):
-    loguru_logger.add(sys.stdout, level="DEBUG")
+    loguru_logger.add(sys.stdout, level="DEBUG", diagnose=False, backtrace=False)
 else:
     log_file = os.path.join(LOG_FOLDER, "{time:YYYY-MM-DD}.log")
     loguru_logger.add(
-        log_file, level="DEBUG", rotation="1 day", retention="7 days", compression="zip"
+        log_file,
+        level="DEBUG",
+        rotation="1 day",
+        retention="7 days",
+        compression="zip",
+        diagnose=False,
+        backtrace=False,
     )
 
     custom_format = (
