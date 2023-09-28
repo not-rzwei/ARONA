@@ -35,4 +35,4 @@ def then1(screenshot: DroidcastRawScreenshot):
 
 @then("Have URL for screenshot")
 def then2(screenshot: DroidcastRawScreenshot):
-    assert screenshot.url == "http://localhost:6969"
+    assert screenshot._url == "http://localhost:6969"

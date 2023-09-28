@@ -2,6 +2,7 @@ import numpy
 import requests
 
 from src.constants.path import BIN_FOLDER
+from src.core.logger import app_logger
 from src.interfaces.driver import (
     IDriver,
     DriverServerError,
@@ -15,9 +16,24 @@ from src.interfaces.screenshot import (
     ScreenshotTakeError,
     ScreenshotTeardownError,
 )
+from src.utils.error_message import ErrorMessage
+
+
+class Error(ErrorMessage):
+    APK_NOT_FOUND = "APK file not found. Make sure the {} file exists"
+    SERVER_ERROR = "Error running droidcast raw server on device"
+    FORWARD_ERROR = "Error forwarding droidcast port {} to {}"
+    RESOLUTION_ERROR = "Error getting device resolution"
+    DROIDCAST_KILL_ERROR = "Error killing droidcast raw server"
+    RELEASE_PORT_ERROR = "Error releasing droidcast port {}"
+
+    SCREENSHOT_NOT_SETUP = "Screenshot has not been setup"
+    SCREENSHOT_ERROR_CODE = "Error taking screenshot. Error code: {}"
 
 
 class DroidcastRawScreenshot(IScreenshot):
+    logger = app_logger(name="DROIDCAST_RAW")
+
     def __init__(self, driver: IDriver):
         self._driver = driver
 
@@ -32,56 +48,65 @@ class DroidcastRawScreenshot(IScreenshot):
     local_port = 0
     remote_port = 16969
 
+    @logger.catch(exception=ScreenshotSetupError, reraise=True, level="DEBUG")
     def setup(self) -> None:
         try:
+            self.logger.debug("Pushing droidcast raw apk to device")
             self._driver.push(self._apk_path.__str__(), self._android_path)
+
+            self.logger.debug("Running droidcast raw server on device")
+            self._driver.execute("pkill -f ink.mol.droidcast_raw.Main")
             self.pid = self._driver.run_daemon(
                 f"CLASSPATH={self._android_path} app_process / ink.mol.droidcast_raw.Main --port={self.remote_port}"
             )
-            self.local_port = self._driver.forward(self.remote_port)
 
+            self.logger.debug("Forwarding droidcast raw port")
+            self.local_port = self._driver.forward(self.remote_port)
             self._url = f"http://localhost:{self.local_port}"
             self._session = requests.Session()
 
+            self.logger.debug("Getting device resolution")
             self.resolution = self._driver.get_device_resolution()
         except FileNotFoundError:
-            raise ScreenshotSetupError(
-                f"APK file does not exist. Make sure you don't delete {self._apk_path}"
-            )
+            raise ScreenshotSetupError(Error.APK_NOT_FOUND.fmt(self._apk_path))
         except DriverServerError:
-            raise ScreenshotSetupError("Error running droidcast raw server on device")
+            raise ScreenshotSetupError(Error.SERVER_ERROR)
         except DriverForwardError:
             raise ScreenshotSetupError(
-                f"Error forwarding droidcast port {self.remote_port} to {self.local_port}"
+                Error.FORWARD_ERROR.fmt(self.remote_port, self.local_port)
             )
         except DriverResolutionError:
-            raise ScreenshotSetupError("Error getting device resolution")
+            raise ScreenshotSetupError(Error.RESOLUTION_ERROR)
 
+    @logger.catch(exception=ScreenshotTeardownError, reraise=True, level="DEBUG")
     def teardown(self) -> None:
         try:
+            self.logger.debug("Killing droidcast raw server")
             _, exit_code = self._driver.execute(f"pkill -P {self.pid}")
             if exit_code == 0:
                 self.pid = 0
 
+            self.logger.debug("Releasing droidcast port")
             if self._driver.release_port(self.local_port):
                 self.local_port = 0
         except DriverCommandError:
-            raise ScreenshotTeardownError("Error killing droidcast raw server")
+            raise ScreenshotTeardownError(Error.DROIDCAST_KILL_ERROR)
         except DriverForwardError:
-            raise ScreenshotTeardownError(
-                f"Error releasing droidcast port {self.local_port}"
-            )
+            raise ScreenshotTeardownError(Error.RELEASE_PORT_ERROR.fmt(self.local_port))
 
+    @logger.catch(exception=ScreenshotTakeError, reraise=True, level="DEBUG")
     def take(self) -> numpy.ndarray:
         if self._session is None:
-            raise ScreenshotTakeError("Screenshot has not been setup")
+            raise ScreenshotTakeError(Error.SCREENSHOT_NOT_SETUP)
 
+        self.logger.debug(f"Device resolution is {self.resolution}")
         width, height = self.resolution
 
+        self.logger.debug(f"Taking screenshot from {self._url}")
         res = self._session.get(f"{self._url}/screenshot?width={width}&height={height}")
 
         if res.status_code != 200:
-            raise ScreenshotTakeError("Error taking screenshot")
+            raise ScreenshotTakeError(Error.SCREENSHOT_ERROR_CODE.fmt(res.status_code))
 
         image = numpy.frombuffer(res.content, dtype=numpy.uint16)
         image = image.reshape((width, height))
