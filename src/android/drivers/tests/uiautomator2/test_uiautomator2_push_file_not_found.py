@@ -5,6 +5,7 @@ import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
+from src.interfaces.driver import DriverPushError
 
 
 @scenario(
@@ -37,7 +38,7 @@ def given2(driver, mocker):
 
 @when("I push a file")
 def when1(driver: UiAutomator2Driver):
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(DriverPushError):
         driver.push("a", "b")
 
 

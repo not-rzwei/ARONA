@@ -4,7 +4,7 @@ import pytest
 from pytest_bdd import scenario, when, then, given
 
 from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
-from src.interfaces.driver import IDriver
+from src.interfaces.driver import IDriver, DriverPushError
 from src.interfaces.screenshot import ScreenshotSetupError
 
 
@@ -25,7 +25,7 @@ def given1():
 
 @given("APK file does not exist")
 def given2(screenshot: DroidcastRawScreenshot):
-    screenshot._driver.push.side_effect = FileNotFoundError  # type: ignore
+    screenshot._driver.push.side_effect = DriverPushError
 
 
 @when("I setup the screenshot")

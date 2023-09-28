@@ -47,6 +47,10 @@ class DriverForwardError(DriverError):
     pass
 
 
+class DriverReleasePortError(DriverError):
+    pass
+
+
 class DriverResolutionError(DriverError):
     pass
 

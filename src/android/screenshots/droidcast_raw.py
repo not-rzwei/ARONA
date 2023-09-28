@@ -9,6 +9,7 @@ from src.interfaces.driver import (
     DriverForwardError,
     DriverResolutionError,
     DriverCommandError,
+    DriverPushError,
 )
 from src.interfaces.screenshot import (
     IScreenshot,
@@ -67,8 +68,8 @@ class DroidcastRawScreenshot(IScreenshot):
 
             self.logger.debug("Getting device resolution")
             self.resolution = self._driver.get_device_resolution()
-        except FileNotFoundError:
-            raise ScreenshotSetupError(Error.APK_NOT_FOUND.fmt(self._apk_path))
+        except DriverPushError as e:
+            raise ScreenshotSetupError(e)
         except DriverServerError:
             raise ScreenshotSetupError(Error.SERVER_ERROR)
         except DriverForwardError:
