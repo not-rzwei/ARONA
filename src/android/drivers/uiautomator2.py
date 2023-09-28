@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import Optional, Tuple, Dict
 
 import uiautomator2
-from adbutils import AdbError
+from adbutils import AdbError, AdbTimeout
 
 from src.core.logger import app_logger
 from src.interfaces.driver import (
@@ -35,7 +35,7 @@ class Error(ErrorMessage):
     RESOLUTION_ERROR = "Failed to get device resolution"
     ORIENTATION_ERROR = "Failed to get device orientation"
 
-    ATX_SERVER_ERROR = "ATX server returned {} for command {}"
+    ATX_ERROR = "atx-agent returned {} for command {}"
     FILE_NOT_FOUND = "File {} not found"
 
 
@@ -69,16 +69,20 @@ class UiAutomator2Driver(IDriver):
         """Disconnect from the device.
         Cleanup the device by killing the atx-agent and releasing the port.
         """
+        if self.state == DriverState.DISCONNECTED:
+            self.logger.debug("Skipping disconnect. Already disconnected")
+            return
+
         try:
             self.logger.debug("Killing atx-agent")
             self.device._adb_device.shell("pkill -f atx-agent")
             self.state = DriverState.DISCONNECTED
 
-            self.logger.debug("Releasing port")
             atx_url = self.device._get_atx_agent_url()
             port = atx_url.split(":")[-1]
+            self.logger.debug(f"Releasing atx-agent port {port}")
             self.release_port(int(port))
-        except (DriverError, AdbError) as e:
+        except (DriverError, AdbError, AdbTimeout) as e:
             raise DriverConnectionError(Error.DISCONNECT_ERROR, str(e))
 
     @logger.catch(DriverCommandError, reraise=True, level="DEBUG")
@@ -99,23 +103,17 @@ class UiAutomator2Driver(IDriver):
             resp = self.device.http.post("/shell/background", data={"command": command})
 
             if resp.status_code != 200:
-                raise DriverServerError(
-                    Error.ATX_SERVER_ERROR.fmt(resp.status_code, command)
-                )
+                raise DriverServerError(Error.ATX_ERROR.fmt(resp.status_code, command))
             content: Dict = resp.json()
             pid = content.get("pid")
 
             # check if response pid is number
             if pid is None:
-                raise DriverServerError(
-                    Error.ATX_SERVER_ERROR.fmt("invalid pid", command)
-                )
+                raise DriverServerError(Error.ATX_ERROR.fmt("invalid pid", command))
 
             return pid
         except ValueError:
-            raise DriverServerError(
-                Error.ATX_SERVER_ERROR.fmt("invalid response", command)
-            )
+            raise DriverServerError(Error.ATX_ERROR.fmt("invalid response", command))
 
     @logger.catch(DriverPushError, reraise=True, level="DEBUG")
     def push(self, src: str, dst: str):

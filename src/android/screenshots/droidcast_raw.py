@@ -55,8 +55,10 @@ class DroidcastRawScreenshot(IScreenshot):
             self.logger.debug("Pushing droidcast raw apk to device")
             self._driver.push(self._apk_path.__str__(), self._android_path)
 
-            self.logger.debug("Running droidcast raw server on device")
+            self.logger.debug("Killing existing droidcast raw server")
             self._driver.execute("pkill -f ink.mol.droidcast_raw.Main")
+
+            self.logger.debug("Running droidcast raw server on device")
             self.pid = self._driver.run_daemon(
                 f"CLASSPATH={self._android_path} app_process / ink.mol.droidcast_raw.Main --port={self.remote_port}"
             )
@@ -81,6 +83,10 @@ class DroidcastRawScreenshot(IScreenshot):
 
     @logger.catch(exception=ScreenshotTeardownError, reraise=True, level="DEBUG")
     def teardown(self) -> None:
+        if self.pid == 0 or self.local_port == 0:
+            self.logger.debug("Skipping teardown. Droidcast raw server not running")
+            return
+
         try:
             self.logger.debug("Killing droidcast raw server")
             _, exit_code = self._driver.execute(f"pkill -P {self.pid}")
