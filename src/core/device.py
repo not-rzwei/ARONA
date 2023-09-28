@@ -1,9 +1,9 @@
 import numpy as np
 
-from src.core.logger import app_logger
 from src.interfaces.driver import IDriver, DriverError, DriverDeviceOrientation
 from src.interfaces.screenshot import IScreenshot, ScreenshotError
 from src.interfaces.touch import ITouch, TouchError
+from src.utils.logger import app_logger
 
 
 class CoreDeviceError(Exception):

@@ -2,7 +2,6 @@ import numpy
 import requests
 
 from src.constants.path import BIN_FOLDER
-from src.core.logger import app_logger
 from src.interfaces.driver import (
     IDriver,
     DriverServerError,
@@ -18,6 +17,7 @@ from src.interfaces.screenshot import (
     ScreenshotTeardownError,
 )
 from src.utils.error_message import ErrorMessage
+from src.utils.logger import app_logger
 
 
 class Error(ErrorMessage):

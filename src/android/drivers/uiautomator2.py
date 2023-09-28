@@ -5,7 +5,6 @@ from typing import Optional, Tuple, Dict
 import uiautomator2
 from adbutils import AdbError, AdbTimeout
 
-from src.core.logger import app_logger
 from src.interfaces.driver import (
     IDriver,
     DriverState,
@@ -20,6 +19,7 @@ from src.interfaces.driver import (
     DriverReleasePortError,
 )
 from src.utils.error_message import ErrorMessage
+from src.utils.logger import app_logger
 
 # Disable uiautomator2 logger as it is too verbose
 uiautomator2.logger.disabled = True
