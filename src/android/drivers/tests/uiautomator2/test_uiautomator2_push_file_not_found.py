@@ -4,8 +4,8 @@ import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
-from src.android.drivers.uiautomator2 import UiAutomator2Driver
-from src.interfaces.driver import DriverPushError
+from src.adapters.driver import DriverPushError
+from src.android.drivers.uiautomator2 import UIAutomator2
 
 
 @scenario(
@@ -25,7 +25,7 @@ def given1(mocker):
     serial = "127.0.0.1:16448"
 
     device = mock.Mock(spec=uiautomator2.Device)
-    dev = UiAutomator2Driver(serial)
+    dev = UIAutomator2(serial)
     dev.device = device
     return dev
 
@@ -37,7 +37,7 @@ def given2(driver, mocker):
 
 
 @when("I push a file")
-def when1(driver: UiAutomator2Driver):
+def when1(driver: UIAutomator2):
     with pytest.raises(DriverPushError):
         driver.push("a", "b")
 

@@ -3,9 +3,9 @@ from unittest import mock
 import pytest
 from pytest_bdd import scenario, when, then, given
 
-from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
-from src.interfaces.driver import IDriver, DriverServerError
-from src.interfaces.screenshot import ScreenshotSetupError
+from src.adapters.driver import DriverAdapter, DriverServerError
+from src.adapters.screenshot import ScreenshotSetupError
+from src.android.screenshots.droidcast_raw import DroidCastRaw
 
 
 @scenario(
@@ -18,22 +18,22 @@ def test_scenario():
 
 @given("APK file has been pushed to device", target_fixture="screenshot")
 def given1():
-    driver = mock.Mock(spec=IDriver)
-    screenshot = DroidcastRawScreenshot(driver)
+    driver = mock.Mock(spec=DriverAdapter)
+    screenshot = DroidCastRaw(driver)
     return screenshot
 
 
 @given("Device is glitchy")
-def given2(screenshot: DroidcastRawScreenshot):
+def given2(screenshot: DroidCastRaw):
     screenshot._driver.run_daemon.side_effect = DriverServerError  # type: ignore
 
 
 @when("I setup the screenshot")
-def when1(screenshot: DroidcastRawScreenshot):
+def when1(screenshot: DroidCastRaw):
     with pytest.raises(ScreenshotSetupError):
         screenshot.setup()
 
 
 @then("Droidcast should raise an error")
-def then1(screenshot: DroidcastRawScreenshot):
+def then1(screenshot: DroidCastRaw):
     pass

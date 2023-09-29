@@ -1,19 +1,19 @@
-from src.interfaces.driver import (
-    IDriver,
+from src.adapters.driver import (
+    DriverAdapter,
     DriverState,
     DriverConnectionError,
     DriverCommandError,
 )
-from src.interfaces.ui_control import (
-    UIControl,
+from src.adapters.ui_control import (
+    UIControlAdapter,
     UIControlSetupError,
     UIControlTapError,
     UIControlSwipeError,
 )
 
 
-class ShellInputTouch(UIControl):
-    def __init__(self, driver: IDriver):
+class ShellInput(UIControlAdapter):
+    def __init__(self, driver: DriverAdapter):
         self.driver = driver
 
     def setup(self) -> None:

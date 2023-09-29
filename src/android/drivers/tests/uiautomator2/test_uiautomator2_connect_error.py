@@ -2,8 +2,8 @@ import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
-from src.android.drivers.uiautomator2 import UiAutomator2Driver
-from src.interfaces.driver import DriverConnectionError
+from src.adapters.driver import DriverConnectionError
+from src.android.drivers.uiautomator2 import UIAutomator2
 
 
 @scenario(
@@ -19,13 +19,13 @@ def given1(mocker):
     mocker.patch("uiautomator2.connect_adb_wifi", side_effect=uiautomator2.ConnectError)
 
     serial = "127.0.0.1:6969"
-    dev = UiAutomator2Driver(serial)
+    dev = UIAutomator2(serial)
     dev.connect = mocker.Mock(side_effect=DriverConnectionError)
     return dev
 
 
 @when("I connect to the device")
-def when1(driver: UiAutomator2Driver):
+def when1(driver: UIAutomator2):
     with pytest.raises(DriverConnectionError):
         driver.connect()
 

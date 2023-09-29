@@ -3,7 +3,7 @@ from unittest import mock
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
-from src.android.drivers.uiautomator2 import UiAutomator2Driver
+from src.android.drivers.uiautomator2 import UIAutomator2
 
 
 @scenario(
@@ -23,13 +23,13 @@ def given1(mocker):
     device.push.side_effect = mock.Mock()
     mocker.patch("builtins.open")
 
-    dev = UiAutomator2Driver(serial)
+    dev = UIAutomator2(serial)
     dev.device = device
     return dev
 
 
 @when("I push a file")
-def when1(driver: UiAutomator2Driver):
+def when1(driver: UIAutomator2):
     driver.push("src", "dst")
 
 

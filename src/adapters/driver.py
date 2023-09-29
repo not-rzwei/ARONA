@@ -55,7 +55,7 @@ class DriverResolutionError(DriverError):
     pass
 
 
-class IDriver(ABC):
+class DriverAdapter(ABC):
     """Interface for driver to interact with Android device."""
 
     state = DriverState.DISCONNECTED
@@ -131,9 +131,6 @@ class IDriver(ABC):
     @abstractmethod
     def get_device_resolution(self) -> Tuple[int, int]:
         """Get device resolution.
-
-        Args:
-            respect_orientation (bool): Respect device orientation.
 
         Returns:
             Tuple[int, int]: Device resolution. Width, height.

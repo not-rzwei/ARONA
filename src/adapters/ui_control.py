@@ -17,7 +17,7 @@ class UIControlSwipeError(UIControlError):
     pass
 
 
-class UIControl(ABC):
+class UIControlAdapter(ABC):
     """Touch interface"""
 
     @abstractmethod

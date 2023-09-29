@@ -1,8 +1,8 @@
 import numpy as np
 
-from src.interfaces.driver import IDriver, DriverError, DriverDeviceOrientation
-from src.interfaces.screenshot import IScreenshot, ScreenshotError
-from src.interfaces.ui_control import UIControl, UIControlError
+from src.adapters.driver import DriverAdapter, DriverError, DriverDeviceOrientation
+from src.adapters.screenshot import ScreenshotAdapter, ScreenshotError
+from src.adapters.ui_control import UIControlAdapter, UIControlError
 from src.utils.logger import app_logger
 
 
@@ -26,7 +26,12 @@ class AndroidDevice:
     logger = app_logger(name="DEVICE")
     orientation: DriverDeviceOrientation
 
-    def __init__(self, driver: IDriver, screenshot: IScreenshot, touch: UIControl):
+    def __init__(
+        self,
+        driver: DriverAdapter,
+        screenshot: ScreenshotAdapter,
+        touch: UIControlAdapter,
+    ):
         self._driver = driver
         self._screenshot = screenshot
         self._touch = touch

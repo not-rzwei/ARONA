@@ -5,8 +5,8 @@ from typing import Optional, Tuple, Dict
 import uiautomator2
 from adbutils import AdbError, AdbTimeout
 
-from src.interfaces.driver import (
-    IDriver,
+from src.adapters.driver import (
+    DriverAdapter,
     DriverState,
     DriverConnectionError,
     DriverCommandError,
@@ -39,7 +39,7 @@ class Error(ErrorMessage):
     FILE_NOT_FOUND = "File {} not found"
 
 
-class UiAutomator2Driver(IDriver):
+class UIAutomator2(DriverAdapter):
     """Driver for UiAutomator2."""
 
     logger = app_logger(name="UIAUTOMATOR2")

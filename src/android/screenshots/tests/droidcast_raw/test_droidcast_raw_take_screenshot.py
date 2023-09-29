@@ -3,8 +3,8 @@ from unittest import mock
 import numpy as np
 from pytest_bdd import scenario, when, then, given
 
-from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
-from src.interfaces.driver import IDriver
+from src.adapters.driver import DriverAdapter
+from src.android.screenshots.droidcast_raw import DroidCastRaw
 
 
 @scenario(
@@ -17,8 +17,8 @@ def test_scenario():
 
 @given("Droidcast server has been setup", target_fixture="screenshot")
 def given1():
-    driver = mock.Mock(spec=IDriver)
-    screenshot = DroidcastRawScreenshot(driver)
+    driver = mock.Mock(spec=DriverAdapter)
+    screenshot = DroidCastRaw(driver)
 
     screenshot.resolution = (2, 1)
     screenshot._session = mock.Mock()
@@ -29,7 +29,7 @@ def given1():
 
 
 @when("I take a screenshot", target_fixture="result")
-def when1(screenshot: DroidcastRawScreenshot):
+def when1(screenshot: DroidCastRaw):
     return screenshot.take()
 
 

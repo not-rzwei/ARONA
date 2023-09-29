@@ -2,8 +2,8 @@ from unittest import mock
 
 from pytest_bdd import scenario, when, then, given
 
-from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
-from src.interfaces.driver import IDriver
+from src.adapters.driver import DriverAdapter
+from src.android.screenshots.droidcast_raw import DroidCastRaw
 
 
 @scenario(
@@ -16,19 +16,19 @@ def test_scenario():
 
 @given("APK file has been pushed to device", target_fixture="screenshot")
 def given1():
-    driver = mock.Mock(spec=IDriver)
+    driver = mock.Mock(spec=DriverAdapter)
     driver.push.return_value = None
     driver.run_daemon.return_value = 1234
 
-    screenshot = DroidcastRawScreenshot(driver)
+    screenshot = DroidCastRaw(driver)
     return screenshot
 
 
 @when("I setup the screenshot")
-def when1(screenshot: DroidcastRawScreenshot):
+def when1(screenshot: DroidCastRaw):
     screenshot.setup()
 
 
 @then("Droidcast server PID should be set")
-def then1(screenshot: DroidcastRawScreenshot):
+def then1(screenshot: DroidCastRaw):
     assert screenshot.pid == 1234

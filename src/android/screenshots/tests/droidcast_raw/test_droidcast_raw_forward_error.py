@@ -3,9 +3,9 @@ from unittest import mock
 import pytest
 from pytest_bdd import scenario, when, then, given
 
-from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
-from src.interfaces.driver import IDriver, DriverForwardError
-from src.interfaces.screenshot import ScreenshotSetupError
+from src.adapters.driver import DriverAdapter, DriverForwardError
+from src.adapters.screenshot import ScreenshotSetupError
+from src.android.screenshots.droidcast_raw import DroidCastRaw
 
 
 @scenario(
@@ -18,22 +18,22 @@ def test_scenario():
 
 @given("Droidcast server is running on device", target_fixture="screenshot")
 def given1():
-    driver = mock.Mock(spec=IDriver)
-    screenshot = DroidcastRawScreenshot(driver)
+    driver = mock.Mock(spec=DriverAdapter)
+    screenshot = DroidCastRaw(driver)
     return screenshot
 
 
 @given("No local port is available")
-def given2(screenshot: DroidcastRawScreenshot):
+def given2(screenshot: DroidCastRaw):
     screenshot._driver.forward.side_effect = DriverForwardError  # type: ignore
 
 
 @when("I setup the screenshot")
-def when1(screenshot: DroidcastRawScreenshot):
+def when1(screenshot: DroidCastRaw):
     with pytest.raises(ScreenshotSetupError):
         screenshot.setup()
 
 
 @then("Droidcast should raise an error")
-def then1(screenshot: DroidcastRawScreenshot):
+def then1(screenshot: DroidCastRaw):
     pass

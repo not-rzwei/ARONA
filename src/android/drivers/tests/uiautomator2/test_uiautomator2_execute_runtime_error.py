@@ -4,8 +4,8 @@ import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
-from src.android.drivers.uiautomator2 import UiAutomator2Driver
-from src.interfaces.driver import DriverCommandError
+from src.adapters.driver import DriverCommandError
+from src.android.drivers.uiautomator2 import UIAutomator2
 
 
 @scenario(
@@ -24,13 +24,13 @@ def given1(mocker):
     device = mock.Mock(spec=uiautomator2.Device)
     device.shell.side_effect = DriverCommandError
 
-    dev = UiAutomator2Driver(serial)
+    dev = UIAutomator2(serial)
     dev.device = device
     return dev
 
 
 @when("I execute a command")
-def when1(driver: UiAutomator2Driver):
+def when1(driver: UIAutomator2):
     with pytest.raises(DriverCommandError):
         driver.execute("echo hello world")
 

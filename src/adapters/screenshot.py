@@ -19,7 +19,7 @@ class ScreenshotTeardownError(ScreenshotError):
     pass
 
 
-class IScreenshot(ABC):
+class ScreenshotAdapter(ABC):
     """Screenshot interface"""
 
     @abstractmethod

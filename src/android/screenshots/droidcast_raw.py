@@ -1,21 +1,21 @@
 import numpy
 import requests
 
-from src.constants.path import BIN_FOLDER
-from src.interfaces.driver import (
-    IDriver,
+from src.adapters.driver import (
+    DriverAdapter,
     DriverServerError,
     DriverForwardError,
     DriverResolutionError,
     DriverCommandError,
     DriverPushError,
 )
-from src.interfaces.screenshot import (
-    IScreenshot,
+from src.adapters.screenshot import (
+    ScreenshotAdapter,
     ScreenshotSetupError,
     ScreenshotTakeError,
     ScreenshotTeardownError,
 )
+from src.constants.path import BIN_FOLDER
 from src.utils.error_message import ErrorMessage
 from src.utils.logger import app_logger
 
@@ -32,10 +32,10 @@ class Error(ErrorMessage):
     SCREENSHOT_ERROR_CODE = "Error taking screenshot. Error code: {}"
 
 
-class DroidcastRawScreenshot(IScreenshot):
+class DroidCastRaw(ScreenshotAdapter):
     logger = app_logger(name="DROIDCAST_RAW")
 
-    def __init__(self, driver: IDriver):
+    def __init__(self, driver: DriverAdapter):
         self._driver = driver
 
     _apk_path = BIN_FOLDER / "droidcast_raw/droidcast_raw.apk"

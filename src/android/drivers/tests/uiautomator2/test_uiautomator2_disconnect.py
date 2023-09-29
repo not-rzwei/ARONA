@@ -3,8 +3,8 @@ import unittest.mock as mock
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
-from src.android.drivers.uiautomator2 import UiAutomator2Driver
-from src.interfaces.driver import DriverState
+from src.adapters.driver import DriverState
+from src.android.drivers.uiautomator2 import UIAutomator2
 
 
 @scenario(
@@ -22,17 +22,17 @@ def given1(mocker):
     dev = mock.Mock(spec=uiautomator2.Device)
     dev._get_atx_agent_url.return_value = "http://localhost:6969"
 
-    driver = UiAutomator2Driver(serial)
+    driver = UIAutomator2(serial)
     driver.state = DriverState.CONNECTED
     driver.device = dev
     return driver
 
 
 @when("I disconnect from the device")
-def when1(driver: UiAutomator2Driver):
+def when1(driver: UIAutomator2):
     driver.disconnect()
 
 
 @then("Driver state should be disconnected")
-def then1(driver: UiAutomator2Driver):
+def then1(driver: UIAutomator2):
     assert driver.state == DriverState.DISCONNECTED

@@ -2,8 +2,8 @@ from unittest import mock
 
 from pytest_bdd import scenario, when, then, given
 
-from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
-from src.interfaces.driver import IDriver
+from src.adapters.driver import DriverAdapter
+from src.android.screenshots.droidcast_raw import DroidCastRaw
 
 
 @scenario(
@@ -16,18 +16,18 @@ def test_scenario():
 
 @given("Device resolution is 720x1280", target_fixture="screenshot")
 def given1():
-    driver = mock.Mock(spec=IDriver)
+    driver = mock.Mock(spec=DriverAdapter)
     driver.get_device_resolution.return_value = (1280, 720)
 
-    screenshot = DroidcastRawScreenshot(driver)
+    screenshot = DroidCastRaw(driver)
     return screenshot
 
 
 @when("I setup the screenshot")
-def when1(screenshot: DroidcastRawScreenshot):
+def when1(screenshot: DroidCastRaw):
     screenshot.setup()
 
 
 @then("Droidcast should set the screenshot resolution to 1280x720")
-def then1(screenshot: DroidcastRawScreenshot):
+def then1(screenshot: DroidCastRaw):
     assert screenshot.resolution == (1280, 720)

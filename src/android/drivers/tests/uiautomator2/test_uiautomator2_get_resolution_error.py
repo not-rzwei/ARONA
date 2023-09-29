@@ -4,8 +4,8 @@ import pytest
 import uiautomator2
 from pytest_bdd import scenario, when, then, given
 
-from src.android.drivers.uiautomator2 import UiAutomator2Driver
-from src.interfaces.driver import DriverResolutionError
+from src.adapters.driver import DriverResolutionError
+from src.android.drivers.uiautomator2 import UIAutomator2
 
 
 @scenario(
@@ -21,7 +21,7 @@ def driver(mocker):
     mocker.patch("uiautomator2.connect_adb_wifi")
     serial = "127.0.0.1:16448"
 
-    dev = UiAutomator2Driver(serial)
+    dev = UIAutomator2(serial)
     return dev
 
 
@@ -35,7 +35,7 @@ def given1(mocker, driver):
 
 
 @when("I get device resolution", target_fixture="result")
-def when1(driver: UiAutomator2Driver):
+def when1(driver: UIAutomator2):
     with pytest.raises(DriverResolutionError):
         driver.get_device_resolution()
 

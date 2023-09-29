@@ -1,12 +1,12 @@
-from src.android.drivers.uiautomator2 import UiAutomator2Driver
-from src.interfaces.driver import DriverState
-from src.interfaces.ui_control import UIControl
+from src.adapters.driver import DriverState
+from src.adapters.ui_control import UIControlAdapter
+from src.android.drivers.uiautomator2 import UIAutomator2
 
 
-class UiAutomator2Touch(UIControl):
+class UiAutomator2TouchAdapter(UIControlAdapter):
     """Touch implementation for UiAutomator2"""
 
-    def __init__(self, driver: UiAutomator2Driver) -> None:
+    def __init__(self, driver: UIAutomator2) -> None:
         self.driver = driver
 
     def setup(self) -> None:
