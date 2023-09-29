@@ -1,23 +1,23 @@
 from abc import ABC, abstractmethod
 
 
-class TouchError(Exception):
+class UIControlError(Exception):
     pass
 
 
-class TouchSetupError(TouchError):
+class UIControlSetupError(UIControlError):
     pass
 
 
-class TouchTapError(TouchError):
+class UIControlTapError(UIControlError):
     pass
 
 
-class TouchSwipeError(TouchError):
+class UIControlSwipeError(UIControlError):
     pass
 
 
-class ITouch(ABC):
+class UIControl(ABC):
     """Touch interface"""
 
     @abstractmethod

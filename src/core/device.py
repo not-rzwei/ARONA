@@ -2,7 +2,7 @@ import numpy as np
 
 from src.interfaces.driver import IDriver, DriverError, DriverDeviceOrientation
 from src.interfaces.screenshot import IScreenshot, ScreenshotError
-from src.interfaces.touch import ITouch, TouchError
+from src.interfaces.ui_control import UIControl, UIControlError
 from src.utils.logger import app_logger
 
 
@@ -26,7 +26,7 @@ class CoreDevice:
     logger = app_logger(name="DEVICE")
     orientation: DriverDeviceOrientation
 
-    def __init__(self, driver: IDriver, screenshot: IScreenshot, touch: ITouch):
+    def __init__(self, driver: IDriver, screenshot: IScreenshot, touch: UIControl):
         self._driver = driver
         self._screenshot = screenshot
         self._touch = touch
@@ -49,7 +49,7 @@ class CoreDevice:
             self.logger.error(f"Failed to setup screenshot method")
 
             raise CoreDeviceScreenshotError(e)
-        except TouchError as e:
+        except UIControlError as e:
             self.logger.error(f"Failed to setup touch method")
 
             raise CoreDeviceTouchError(e)
