@@ -1,16 +1,16 @@
-import pytest
+import numpy as np
 from dependency_injector import containers, providers
 from pytest_bdd import scenario, when, then, given
 
+from src.android.device import AndroidDevice
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
 from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
 from src.android.touches.shell_input import ShellInputTouch
-from src.core.device import CoreDevice, CoreDeviceScreenshotError
 
 
 @scenario(
     feature_name="device.feature",
-    scenario_name="Error connecting to Device due to screenshot error",
+    scenario_name="Connect to Device",
 )
 def test_scenario():
     pass
@@ -25,26 +25,28 @@ class CoreDeviceContainer(containers.DeclarativeContainer):
     screenshot = providers.Singleton(DroidcastRawScreenshot, driver=driver)
     touch = providers.Singleton(ShellInputTouch, driver=driver)
     device = providers.Factory(
-        CoreDevice, driver=driver, screenshot=screenshot, touch=touch
+        AndroidDevice, driver=driver, screenshot=screenshot, touch=touch
     )
 
 
-# noinspection PyProtectedMember
 @given("The device is provided", target_fixture="device")
 def given1():
     container = CoreDeviceContainer()
     device = container.device()
-    device._screenshot._apk_path = "invalid_path"
     yield device
     device.disconnect()
 
 
 @when("I connect to the device")
-def when1(device: CoreDevice):
-    with pytest.raises(CoreDeviceScreenshotError):
-        device.connect()
+def when1(device: AndroidDevice):
+    device.connect()
 
 
-@then("I got an screenshot error message")
-def then1(device: CoreDevice):
-    pass
+@then("I can take a screenshot")
+def then1(device: AndroidDevice):
+    assert isinstance(device._screenshot.take(), np.ndarray)
+
+
+@then("I can touch the screen")
+def then2(device: AndroidDevice):
+    device._touch.tap((50, 50))

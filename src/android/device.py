@@ -6,23 +6,23 @@ from src.interfaces.ui_control import UIControl, UIControlError
 from src.utils.logger import app_logger
 
 
-class CoreDeviceError(Exception):
+class AndroidDeviceError(Exception):
     pass
 
 
-class CoreDeviceDriverError(CoreDeviceError):
+class AndroidDeviceDriverError(AndroidDeviceError):
     pass
 
 
-class CoreDeviceScreenshotError(CoreDeviceError):
+class AndroidDeviceScreenshotError(AndroidDeviceError):
     pass
 
 
-class CoreDeviceTouchError(CoreDeviceError):
+class AndroidDeviceTouchError(AndroidDeviceError):
     pass
 
 
-class CoreDevice:
+class AndroidDevice:
     logger = app_logger(name="DEVICE")
     orientation: DriverDeviceOrientation
 
@@ -44,15 +44,15 @@ class CoreDevice:
         except DriverError as e:
             self.logger.error(f"Failed to connect to device")
 
-            raise CoreDeviceDriverError(e)
+            raise AndroidDeviceDriverError(e)
         except ScreenshotError as e:
             self.logger.error(f"Failed to setup screenshot method")
 
-            raise CoreDeviceScreenshotError(e)
+            raise AndroidDeviceScreenshotError(e)
         except UIControlError as e:
             self.logger.error(f"Failed to setup touch method")
 
-            raise CoreDeviceTouchError(e)
+            raise AndroidDeviceTouchError(e)
 
     def disconnect(self):
         try:

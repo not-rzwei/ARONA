@@ -2,10 +2,10 @@ import pytest
 from dependency_injector import containers, providers
 from pytest_bdd import scenario, when, then, given
 
+from src.android.device import AndroidDevice, AndroidDeviceDriverError
 from src.android.drivers.uiautomator2 import UiAutomator2Driver
 from src.android.screenshots.droidcast_raw import DroidcastRawScreenshot
 from src.android.touches.shell_input import ShellInputTouch
-from src.core.device import CoreDevice, CoreDeviceDriverError
 
 
 @scenario(
@@ -25,7 +25,7 @@ class CoreDeviceContainer(containers.DeclarativeContainer):
     screenshot = providers.Singleton(DroidcastRawScreenshot, driver=driver)
     touch = providers.Singleton(ShellInputTouch, driver=driver)
     device = providers.Factory(
-        CoreDevice, driver=driver, screenshot=screenshot, touch=touch
+        AndroidDevice, driver=driver, screenshot=screenshot, touch=touch
     )
 
 
@@ -40,11 +40,11 @@ def given1():
 
 
 @when("I connect to the device")
-def when1(device: CoreDevice):
-    with pytest.raises(CoreDeviceDriverError):
+def when1(device: AndroidDevice):
+    with pytest.raises(AndroidDeviceDriverError):
         device.connect()
 
 
 @then("I got an driver error message")
-def then1(device: CoreDevice):
+def then1(device: AndroidDevice):
     pass
