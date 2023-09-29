@@ -16,7 +16,7 @@ def test_scenario():
 def given1(mocker):
     serial = "127.0.0.1:16448"
     dev = UIAutomator2(serial)
-    mocker.patch("uiautomator2.connect_adb_wifi")
+    mocker.patch("src.android.drivers.uiautomator2.uiautomator2")
     return dev
 
 
