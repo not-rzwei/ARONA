@@ -28,7 +28,7 @@ def when1(pages):
 @then("Campaign should become a child of Lobby")
 def then1(pages):
     lobby, campaign = pages
-    assert campaign in lobby.children
+    assert campaign in lobby.links
 
 
 @then("Lobby should become a parent of Campaign")

@@ -8,7 +8,7 @@ class Page:
 
     def __init__(self, name: str):
         self.name = name
-        self.children: list["Page"] = []
+        self.links: list["Page"] = []
         self.parent: Optional["Page"] = None
 
     def __repr__(self):
@@ -16,9 +16,10 @@ class Page:
 
     def link(self, *pages: "Page"):
         for page in pages:
-            if page not in self.children:
+            if page not in self.links:
                 page.parent = self
-                self.children.append(page)
+                page.links.append(self)
+                self.links.append(page)
 
     @property
     def cue(self) -> ImageCue:

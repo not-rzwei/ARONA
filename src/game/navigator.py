@@ -37,7 +37,7 @@ class Navigator:
             if current_page.name == self.pages[destination].name:
                 return path.copy()
 
-            for linked_page in current_page.children:
+            for linked_page in current_page.links:
                 if linked_page.name not in visited:
                     result = dfs_search(linked_page)
                     if result:

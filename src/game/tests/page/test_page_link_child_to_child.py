@@ -32,5 +32,5 @@ def when1(pages):
 @then("Mission should not become a child of Lobby")
 def then1(pages, mission):
     lobby, campaign = pages
-    assert mission in campaign.children
-    assert mission not in lobby.children
+    assert mission in campaign.links
+    assert mission not in lobby.links

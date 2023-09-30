@@ -29,7 +29,6 @@ def when1(navigator):
 
 @then("Navigator should return Lobby, Campaign, Mission")
 def then1(path):
-    assert path is not None
     assert len(path) == 3
     assert path[0].name == "Lobby"
     assert path[1].name == "Campaign"
