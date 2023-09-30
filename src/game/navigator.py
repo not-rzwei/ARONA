@@ -9,11 +9,10 @@ from src.game.page import Page
 class Navigator:
     """Manage the page navigation of the game"""
 
-    pages: Dict[str, Page] = {}
-    current_page: Page
-
     def __init__(self, device: DriverAdapter):
         self._device = device
+        self.pages: Dict[str, Page] = {}
+        self.current_page = Page("")
 
     def register(self, *pages: Page):
         for page in pages:
