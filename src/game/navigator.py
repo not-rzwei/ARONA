@@ -30,14 +30,14 @@ class Navigator:
             return None
 
         def dfs_search(current_page):
-            visited.add(current_page)
+            visited.add(current_page.name)
             path.append(current_page)
 
-            if current_page == self.pages[destination]:
+            if current_page.name == self.pages[destination].name:
                 return path.copy()
 
             for linked_page in current_page.links:
-                if linked_page not in visited:
+                if linked_page.name not in visited:
                     result = dfs_search(linked_page)
                     if result:
                         return result
