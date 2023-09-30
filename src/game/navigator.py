@@ -15,7 +15,7 @@ class Navigator:
     def __init__(self, device: DriverAdapter):
         self._device = device
 
-    def register(self, pages: List[Page]):
+    def register(self, *pages: Page):
         for page in pages:
             self.pages[page.name] = page
 

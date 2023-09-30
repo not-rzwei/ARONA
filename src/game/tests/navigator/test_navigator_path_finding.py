@@ -3,7 +3,6 @@ from unittest import mock
 from pytest_bdd import scenario, given, then, when
 
 from src.game.navigator import Navigator
-from src.game.page import Page
 
 
 @scenario(
@@ -14,25 +13,11 @@ def test_scenario():
     pass
 
 
-@given("Lobby is the main page", target_fixture="pages")
-@given("Campaign page can be accessed from Lobby")
-@given("Mission page can be accessed from Campaign")
-def background():
-    lobby = Page("Lobby")
-    campaign = Page("Campaign")
-    mission = Page("Mission")
-
-    lobby.link(campaign)
-    campaign.link(mission)
-
-    return lobby, campaign, mission
-
-
 @given("Navigator is on Lobby", target_fixture="navigator")
-def given1(pages):
+def given1(lobby, campaign, mission):
     device = mock.Mock()
     navigator = Navigator(device)
-    navigator.register(pages)
+    navigator.register(lobby, campaign, mission)
     navigator.set_current_page("Lobby")
     return navigator
 

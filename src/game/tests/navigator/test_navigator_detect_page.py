@@ -6,7 +6,6 @@ from pytest_bdd import scenario, given, then, when
 
 from src.constants.path import RES_FOLDER
 from src.game.navigator import Navigator
-from src.game.page import Page
 
 
 @scenario(
@@ -17,25 +16,11 @@ def test_scenario():
     pass
 
 
-@given("Lobby is the main page", target_fixture="pages")
-@given("Campaign page can be accessed from Lobby")
-@given("Mission page can be accessed from Campaign")
-def background():
-    lobby = Page("Lobby")
-    campaign = Page("Campaign")
-    mission = Page("Mission")
-
-    lobby.link(campaign)
-    campaign.link(mission)
-
-    return lobby, campaign, mission
-
-
 @pytest.fixture
-def navigator(pages):
+def navigator(lobby, campaign, mission):
     device = mock.Mock()
     navigator = Navigator(device)
-    navigator.register(pages)
+    navigator.register(lobby, campaign, mission)
     return navigator
 
 
