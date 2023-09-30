@@ -32,8 +32,8 @@ def background():
 def given1(pages):
     lobby, *_ = pages
 
-    driver = mock.Mock()
-    navigator = Navigator(driver)
+    device = mock.Mock()
+    navigator = Navigator(device)
     navigator.register(lobby, pages)
     return navigator
 

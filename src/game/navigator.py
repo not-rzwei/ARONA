@@ -10,8 +10,8 @@ class Navigator:
     pages: Dict[str, Page] = {}
     initial_page: Page
 
-    def __init__(self, driver: DriverAdapter):
-        self._driver = driver
+    def __init__(self, device: DriverAdapter):
+        self._device = device
 
     def register(self, initial: Page, pages: List[Page]):
         if initial not in pages:
