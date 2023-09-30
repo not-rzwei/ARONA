@@ -163,7 +163,9 @@ dump/
 playground/
 .vscode/
 
-**/tests/**/*.jpg
-**/tests/**/*.png
+tests/**/*.jpg
+tests/**/*.png
+src/**/*.jpg
+src/**/*.png
 
 logs/

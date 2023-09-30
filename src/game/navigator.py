@@ -1,5 +1,7 @@
 from typing import List, Dict
 
+import numpy as np
+
 from src.adapters.driver import DriverAdapter
 from src.game.page import Page
 
@@ -50,3 +52,12 @@ class Navigator:
             return result_path
 
         return None
+
+    def detect_page(self, screenshot: np.ndarray) -> Page | None:
+        try:
+            for page in self.pages.values():
+                if page.cue.appear_in(screenshot):
+                    return page
+            return None
+        except (AttributeError, FileNotFoundError, ValueError):
+            return None
