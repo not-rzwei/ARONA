@@ -9,7 +9,7 @@ from src.game.resource import ImageResource
 
 @scenario(
     feature_name="navigator.feature",
-    scenario_name="Detecting current page",
+    scenario_name="Match current page with device",
 )
 def test_scenario():
     pass
@@ -23,16 +23,19 @@ def navigator(lobby, campaign, mission):
     return navigator
 
 
+@given("Navigator is on Lobby")
 @given("Screenshot is taken from Lobby", target_fixture="screenshot")
-def given1():
+def given1(navigator):
+    navigator.set_current_page("Lobby")
+
     return ImageResource("tests/pages/LOBBY.jpg").load()
 
 
-@when("Navigator detect page", target_fixture="page")
+@when("Navigator match current page", target_fixture="is_current_page")
 def when1(navigator, screenshot):
-    return navigator.detect_page(screenshot)
+    return navigator.match_current_page(screenshot)
 
 
-@then("Navigator should return Lobby")
-def then1(page):
-    assert page.name == "Lobby"
+@then("Navigator should return true")
+def then1(is_current_page):
+    assert is_current_page is True

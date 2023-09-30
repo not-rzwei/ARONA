@@ -31,3 +31,15 @@ Feature: Navigator
     Given Screenshot is taken from Lobby
     When Navigator detect page
     Then Navigator should return Lobby
+
+  Scenario: Match current page with device
+    Given Navigator is on Lobby
+    And Screenshot is taken from Lobby
+    When Navigator match current page
+    Then Navigator should return true
+
+  Scenario: Current page does not match with device
+    Given Navigator is on Lobby
+    And Screenshot is taken from Campaign
+    When Navigator match current page
+    Then Navigator should return false

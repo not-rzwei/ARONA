@@ -59,3 +59,9 @@ class Navigator:
             return None
         except (AttributeError, FileNotFoundError, ValueError):
             return None
+
+    def match_current_page(self, screenshot: npt.NDArray) -> bool:
+        try:
+            return self.current_page.cue.appear_in(screenshot)
+        except (AttributeError, FileNotFoundError, ValueError):
+            return False
