@@ -29,6 +29,8 @@ logging.getLogger("logzero").disabled = True
 class Error(ErrorMessage):
     CONNECT_ERROR = "Failed to connect to {}"
     DISCONNECT_ERROR = "Failed to disconnect"
+    NOT_CONNECTED_ERROR = "Driver is not connected"
+
     PUSH_ERROR = "Failed to push file"
     FORWARD_ERROR = "Failed to forward port {}"
     RELEASE_PORT_ERROR = "Failed to release port {}"
@@ -43,7 +45,6 @@ class UIAutomator2(DriverAdapter):
     """Driver for UiAutomator2."""
 
     logger = app_logger(name="UIAUTOMATOR2")
-    device: uiautomator2.Device
 
     def __init__(self, serial: str):
         """
@@ -52,6 +53,8 @@ class UIAutomator2(DriverAdapter):
             serial (str): Android device serial address
         """
         self.serial = serial
+        self.state = DriverState.DISCONNECTED
+        self.device: Optional[uiautomator2.Device] = None
 
     @logger.catch(DriverConnectionError, reraise=True, level="DEBUG")
     def connect(self) -> None:
@@ -69,7 +72,7 @@ class UIAutomator2(DriverAdapter):
         """Disconnect from the device.
         Cleanup the device by killing the atx-agent and releasing the port.
         """
-        if self.state == DriverState.DISCONNECTED:
+        if self.state == DriverState.DISCONNECTED or self.device is None:
             self.logger.debug("Skipping disconnect. Already disconnected")
             return
 
@@ -87,6 +90,9 @@ class UIAutomator2(DriverAdapter):
 
     @logger.catch(DriverCommandError, reraise=True, level="DEBUG")
     def execute(self, command: str) -> Tuple[str, int]:
+        if self.device is None:
+            raise DriverConnectionError(Error.NOT_CONNECTED_ERROR)
+
         try:
             self.logger.debug(f"Executing command: {command}")
             output, exit_code = self.device.shell(command)
@@ -98,6 +104,9 @@ class UIAutomator2(DriverAdapter):
 
     @logger.catch(DriverServerError, reraise=True, level="DEBUG")
     def run_daemon(self, command: str) -> int:
+        if self.device is None:
+            raise DriverConnectionError(Error.NOT_CONNECTED_ERROR)
+
         try:
             self.logger.debug(f"Running daemon: {command}")
             resp = self.device.http.post("/shell/background", data={"command": command})
@@ -117,6 +126,9 @@ class UIAutomator2(DriverAdapter):
 
     @logger.catch(DriverPushError, reraise=True, level="DEBUG")
     def push(self, src: str, dst: str):
+        if self.device is None:
+            raise DriverConnectionError(Error.NOT_CONNECTED_ERROR)
+
         try:
             self.logger.debug(f"Opening file {src}")
             with open(src, "rb") as f:
@@ -130,6 +142,9 @@ class UIAutomator2(DriverAdapter):
     # noinspection PyProtectedMember
     @logger.catch(DriverForwardError, reraise=True, level="DEBUG")
     def forward(self, remote: int, local: Optional[int] = None) -> int:
+        if self.device is None:
+            raise DriverConnectionError(Error.NOT_CONNECTED_ERROR)
+
         try:
             if local is not None:
                 self.logger.debug(f"Forwarding port {remote} to {local}")
@@ -144,6 +159,9 @@ class UIAutomator2(DriverAdapter):
     # noinspection PyProtectedMember
     @logger.catch(DriverReleasePortError, reraise=True, level="DEBUG")
     def release_port(self, local: int) -> bool:
+        if self.device is None:
+            raise DriverConnectionError(Error.NOT_CONNECTED_ERROR)
+
         try:
             self.logger.debug(f"Releasing port {local}")
             self.device._adb_device.open_transport(f"killforward:tcp:{local}")
@@ -154,6 +172,9 @@ class UIAutomator2(DriverAdapter):
     @lru_cache(maxsize=1)
     @logger.catch(DriverResolutionError, reraise=True, level="DEBUG")
     def get_device_resolution(self) -> Tuple[int, int]:
+        if self.device is None:
+            raise DriverConnectionError(Error.NOT_CONNECTED_ERROR)
+
         resolution = self.device.device_info.get("display", {})
         width = resolution.get("width", 0)
         height = resolution.get("height", 0)
@@ -174,6 +195,9 @@ class UIAutomator2(DriverAdapter):
     @lru_cache(maxsize=1)
     @logger.catch(DriverCommandError, reraise=True, level="DEBUG")
     def get_device_orientation(self) -> DriverDeviceOrientation:
+        if self.device is None:
+            raise DriverConnectionError(Error.NOT_CONNECTED_ERROR)
+
         try:
             self.logger.debug(f"Getting device orientation")
             orientation, exit_code = self.execute(

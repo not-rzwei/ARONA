@@ -35,19 +35,17 @@ class Error(ErrorMessage):
 class DroidCastRaw(ScreenshotAdapter):
     logger = app_logger(name="DROIDCAST_RAW")
 
-    def __init__(self, driver: DriverAdapter):
-        self._driver = driver
-
     _apk_path = BIN_FOLDER / "droidcast_raw/droidcast_raw.apk"
     _android_path = "/data/local/tmp/droidcast_raw.apk"
-
-    _url = ""
-    _session = None
-
-    resolution = (0, 0)
-    pid = 0
-    local_port = 0
     remote_port = 16969
+
+    def __init__(self, driver: DriverAdapter):
+        self._driver = driver
+        self._url = ""
+        self._session = requests.Session()
+        self.resolution = (0, 0)
+        self.pid = 0
+        self.local_port = 0
 
     @logger.catch(exception=ScreenshotSetupError, reraise=True, level="DEBUG")
     def setup(self) -> None:
@@ -66,7 +64,6 @@ class DroidCastRaw(ScreenshotAdapter):
             self.logger.debug("Forwarding droidcast raw port")
             self.local_port = self._driver.forward(self.remote_port)
             self._url = f"http://localhost:{self.local_port}"
-            self._session = requests.Session()
 
             self.logger.debug("Getting device resolution")
             self.resolution = self._driver.get_device_resolution()
