@@ -1,5 +1,6 @@
-adbutils==1.2.13
-pytest==7.4.2
-pytest_bdd==6.1.1
-Requests==2.31.0
-uiautomator2==2.15.2
+dependency_injector==4.41.0
+loguru==0.7.2
+numpy==1.26.0
+opencv_python==4.8.0.76
+requests==2.31.0
+uiautomator2==2.16.25
