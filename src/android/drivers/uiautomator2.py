@@ -105,10 +105,10 @@ class UIAutomator2(DriverAdapter):
             if resp.status_code != 200:
                 raise DriverServerError(Error.ATX_ERROR.fmt(resp.status_code, command))
             content: Dict = resp.json()
-            pid = content.get("pid")
+            pid: int = content.get("pid", 0)
 
             # check if response pid is number
-            if pid is None:
+            if pid == 0:
                 raise DriverServerError(Error.ATX_ERROR.fmt("invalid pid", command))
 
             return pid
@@ -137,7 +137,7 @@ class UIAutomator2(DriverAdapter):
                 return local
 
             self.logger.debug(f"Forwarding port {remote}")
-            return self.device._adb_device.forward_port(remote)
+            return self.device._adb_device.forward_port(remote)  # type: ignore
         except (RuntimeError, AdbError) as e:
             raise DriverForwardError(Error.FORWARD_ERROR.fmt(remote), str(e))
 

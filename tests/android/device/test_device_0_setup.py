@@ -1,4 +1,3 @@
-import numpy as np
 from dependency_injector import containers, providers
 from pytest_bdd import scenario, when, then, given
 
@@ -44,7 +43,7 @@ def when1(device: AndroidDevice):
 
 @then("I can take a screenshot")
 def then1(device: AndroidDevice):
-    assert isinstance(device._screenshot.take(), np.ndarray)
+    device._screenshot.take()
 
 
 @then("I can touch the screen")

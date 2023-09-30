@@ -1,6 +1,6 @@
 from unittest import mock
 
-import numpy as np
+import numpy.typing as npt
 from pytest_bdd import scenario, when, then, given
 
 from src.adapters.driver import DriverAdapter
@@ -34,5 +34,5 @@ def when1(screenshot: DroidCastRaw):
 
 
 @then("Droidcast should return ndarray of screenshot")
-def then1(result: np.ndarray):
+def then1(result: npt.NDArray):
     assert result.shape == (2, 1, 3)

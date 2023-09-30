@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 
 import cv2
-import numpy as np
+import numpy.typing as npt
 
 from src.constants.path import RES_FOLDER
 
@@ -19,12 +19,12 @@ class ImageResource(Resource):
     def __repr__(self):
         return f"ImageResource({self.name})"
 
-    def load(self) -> np.ndarray:
+    def load(self) -> npt.NDArray:
         """Load RGB image from resource folder"""
         filename = RES_FOLDER / self.name
         if not filename.exists():
             raise FileNotFoundError(f"File {filename} not found")
-        return cv2.imread(str(filename))[..., ::-1]
+        return cv2.imread(str(filename))[..., ::-1]  # type: ignore
 
 
 class ImageCue(ImageResource):
@@ -35,7 +35,7 @@ class ImageCue(ImageResource):
     def __repr__(self):
         return f"ImageCue({self.name}, {self.threshold})"
 
-    def appear_in(self, screenshot: np.ndarray) -> bool:
+    def appear_in(self, screenshot: npt.NDArray) -> bool:
         screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2GRAY)
         template = cv2.cvtColor(self.load(), cv2.COLOR_RGB2GRAY)
         result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)

@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 
 from src.adapters.driver import DriverAdapter, DriverError, DriverDeviceOrientation
 from src.adapters.screenshot import ScreenshotAdapter, ScreenshotError
@@ -71,7 +72,7 @@ class AndroidDevice:
 
             pass
 
-    def screenshot(self) -> np.ndarray:
+    def screenshot(self) -> npt.NDArray:
         self.logger.info(f"Taking screenshot")
         ss = self._screenshot.take()
         ss_height, ss_width, _ = ss.shape

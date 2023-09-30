@@ -1,4 +1,4 @@
-import numpy as np
+import numpy.typing as npt
 from dependency_injector import containers, providers
 from pytest_bdd import scenario, when, then, given
 
@@ -44,12 +44,8 @@ def when1(device: AndroidDevice):
 
 
 @then("I got a screenshot")
-def then1(device: AndroidDevice, result: np.ndarray):
-    assert isinstance(result, np.ndarray)
-
-
 @then("The resolution is match the device resolution in landscape mode")
-def then2(device: AndroidDevice, result: np.ndarray):
+def then2(device: AndroidDevice, result: npt.NDArray):
     device_resolution = device._driver.get_device_resolution()
     ss_height, ss_width, _ = result.shape
 

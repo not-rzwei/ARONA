@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-import numpy as np
+import numpy.typing as npt
 
 from src.adapters.driver import DriverAdapter
 from src.game.page import Page
@@ -31,7 +31,7 @@ class Navigator:
         if destination not in self.pages:
             return None
 
-        def dfs_search(current_page):
+        def dfs_search(current_page) -> List[Page] | None:
             visited.add(current_page.name)
             path.append(current_page)
 
@@ -53,7 +53,7 @@ class Navigator:
 
         return None
 
-    def detect_page(self, screenshot: np.ndarray) -> Page | None:
+    def detect_page(self, screenshot: npt.NDArray) -> Page | None:
         try:
             for page in self.pages.values():
                 if page.cue.appear_in(screenshot):
