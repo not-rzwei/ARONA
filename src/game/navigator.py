@@ -10,19 +10,18 @@ class Navigator:
     """Manage the page navigation of the game"""
 
     pages: Dict[str, Page] = {}
-    initial_page: Page
+    current_page: Page
 
     def __init__(self, device: DriverAdapter):
         self._device = device
 
-    def register(self, initial: Page, pages: List[Page]):
-        if initial not in pages:
-            raise ValueError("Initial page must be in pages list")
-
-        self.initial_page = initial
-
+    def register(self, pages: List[Page]):
         for page in pages:
             self.pages[page.name] = page
+
+    def set_current_page(self, page: str):
+        if page in self.pages:
+            self.current_page = self.pages[page]
 
     def find_path(self, destination: str) -> List[Page] | None:
         visited = set()
@@ -38,7 +37,7 @@ class Navigator:
             if current_page.name == self.pages[destination].name:
                 return path.copy()
 
-            for linked_page in current_page.links:
+            for linked_page in current_page.children:
                 if linked_page.name not in visited:
                     result = dfs_search(linked_page)
                     if result:
@@ -46,7 +45,7 @@ class Navigator:
             path.pop()
             return None
 
-        result_path = dfs_search(self.initial_page)
+        result_path = dfs_search(self.current_page)
 
         if result_path:
             return result_path

@@ -33,11 +33,9 @@ def background():
 
 @pytest.fixture
 def navigator(pages):
-    lobby, *_ = pages
-
     device = mock.Mock()
     navigator = Navigator(device)
-    navigator.register(lobby, pages)
+    navigator.register(pages)
     return navigator
 
 

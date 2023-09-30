@@ -30,11 +30,10 @@ def background():
 
 @given("Navigator is on Lobby", target_fixture="navigator")
 def given1(pages):
-    lobby, *_ = pages
-
     device = mock.Mock()
     navigator = Navigator(device)
-    navigator.register(lobby, pages)
+    navigator.register(pages)
+    navigator.set_current_page("Lobby")
     return navigator
 
 
