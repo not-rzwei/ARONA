@@ -6,14 +6,13 @@ from src.game.resource import ImageCue
 class Page:
     """A Navigable Page in the Game"""
 
-    parent: Optional["Page"] = None
-    children: list["Page"] = []
+    def __init__(self, name: str):
+        self.name = name
+        self.children: list["Page"] = []
+        self.parent: Optional["Page"] = None
 
     def __repr__(self):
         return f"Page({self.name})"
-
-    def __init__(self, name: str):
-        self.name = name
 
     def link(self, *pages: "Page"):
         for page in pages:
