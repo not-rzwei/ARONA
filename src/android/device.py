@@ -90,3 +90,12 @@ class AndroidDevice:
         total_rotation = (image_to_device_rotation + device_to_target_rotation) % 4
 
         return np.rot90(ss, total_rotation * -1)
+
+    def tap(self, point: tuple[int, int]) -> None:
+        max_x, max_y = self._driver.get_device_resolution()
+        if point[0] > max_x or point[1] > max_y:
+            self.logger.warning(f"Tap point {point} is out of bound")
+            return
+
+        self.logger.info(f"Tapping at {point}")
+        self._touch.tap(point)
