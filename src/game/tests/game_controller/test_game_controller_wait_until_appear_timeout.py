@@ -4,7 +4,7 @@ import pytest
 from pytest_bdd import scenario, given, then, when
 
 from src.game.game_controller import GameController
-from src.game.page import Page
+from src.game.resource import ImageResource
 
 
 @scenario(
@@ -35,8 +35,7 @@ def given1(game_controller, mocker):
     target_fixture="result",
 )
 def when1(game_controller):
-    campaign = Page("Campaign")
-    return game_controller.until_image_is_on_screen(campaign.cue, timeout=2)
+    return game_controller.until_image_is_on_screen(ImageResource("test"), timeout=2)
 
 
 @then("It should return false")

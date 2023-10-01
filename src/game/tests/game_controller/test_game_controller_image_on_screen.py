@@ -4,7 +4,6 @@ import pytest
 from pytest_bdd import scenario, given, then, when
 
 from src.game.game_controller import GameController
-from src.game.page import Page
 from src.game.resource import ImageResource
 
 
@@ -31,8 +30,8 @@ def given1(game_controller):
 
 @when("Controller find Lobby landmark", target_fixture="result")
 def when1(game_controller):
-    lobby = Page("Lobby")
-    return game_controller.is_image_on_screen(lobby.cue)
+    image = ImageResource("pages/lobby/LANDMARK.png")
+    return game_controller.is_image_on_screen(image)
 
 
 @then("It should return true")
