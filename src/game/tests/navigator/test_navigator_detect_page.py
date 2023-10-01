@@ -9,7 +9,7 @@ from src.game.resource import ImageResource
 
 @scenario(
     feature_name="navigator.feature",
-    scenario_name="Detecting current page",
+    scenario_name="Detect current page from screenshot",
 )
 def test_scenario():
     pass

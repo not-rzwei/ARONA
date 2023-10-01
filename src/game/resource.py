@@ -35,7 +35,7 @@ class ImageCue(ImageResource):
     def __repr__(self):
         return f"ImageCue({self.name}, {self.threshold})"
 
-    def appear_in(self, screenshot: npt.NDArray) -> bool:
+    def is_appeared_in(self, screenshot: npt.NDArray) -> bool:
         screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2GRAY)
         template = cv2.cvtColor(self.load(), cv2.COLOR_RGB2GRAY)
         result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)

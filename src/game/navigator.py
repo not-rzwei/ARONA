@@ -54,7 +54,7 @@ class Navigator:
     def detect_page(self, screenshot: npt.NDArray) -> Page | None:
         try:
             for page in self.pages.values():
-                if page.cue.appear_in(screenshot):
+                if page.cue.is_appeared_in(screenshot):
                     return page
             return None
         except (AttributeError, FileNotFoundError, ValueError):
@@ -62,6 +62,6 @@ class Navigator:
 
     def match_current_page(self, screenshot: npt.NDArray) -> bool:
         try:
-            return self.current_page.cue.appear_in(screenshot)
+            return self.current_page.cue.is_appeared_in(screenshot)
         except (AttributeError, FileNotFoundError, ValueError):
             return False

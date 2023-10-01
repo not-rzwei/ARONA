@@ -27,7 +27,7 @@ Feature: Navigator
     When Navigator find path to Unknown
     Then Navigator should return None
 
-  Scenario: Detecting current page
+  Scenario: Detect current page from screenshot
     Given Screenshot is taken from Lobby
     When Navigator detect page
     Then Navigator should return Lobby
@@ -43,3 +43,4 @@ Feature: Navigator
     And Screenshot is taken from Campaign
     When Navigator match current page
     Then Navigator should return false
+
