@@ -91,11 +91,16 @@ class AndroidDevice:
 
         return np.rot90(ss, total_rotation * -1)
 
-    def tap(self, point: tuple[int, int]) -> None:
-        max_x, max_y = self._driver.get_device_resolution()
-        if point[0] > max_x or point[1] > max_y:
-            self.logger.warning(f"Tap point {point} is out of bound")
-            return
+    def tap(self, point: tuple[int, int]) -> bool:
+        try:
+            max_x, max_y = self._driver.get_device_resolution()
+            if point[0] > max_x or point[1] > max_y:
+                self.logger.warning(f"Tap point {point} is out of bound")
+                return False
 
-        self.logger.info(f"Tapping at {point}")
-        self._touch.tap(point)
+            self.logger.info(f"Tapping at {point}")
+            self._touch.tap(point)
+            return True
+        except (UIControlError, DriverError):
+            self.logger.error(f"Failed to tap at {point}. See debug log for details")
+            return False
