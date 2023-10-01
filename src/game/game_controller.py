@@ -1,3 +1,5 @@
+import time
+
 import cv2
 
 from src.android.device import AndroidDevice
@@ -20,3 +22,18 @@ class GameController:
         result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)
         _, max_val, _, _ = cv2.minMaxLoc(result)
         return max_val >= threshold
+
+    def until_image_is_on_screen(
+        self,
+        image: ImageResource,
+        threshold: float = 0.969,
+        delay: float = 0.5,
+        timeout: int = 10,
+    ) -> bool:
+        """Wait until image is on screen."""
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            if self.is_image_on_screen(image, threshold):
+                return True
+            time.sleep(delay)
+        return False
