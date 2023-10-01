@@ -26,3 +26,9 @@ class ImageResource(Resource):
         if not filename.exists():
             raise FileNotFoundError(f"File {filename} not found")
         return cv2.imread(str(filename))[..., ::-1]  # type: ignore
+
+
+class ButtonResource(ImageResource):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.is_tapped = False

@@ -5,7 +5,8 @@ import numpy as np
 
 from src.android.device import AndroidDevice
 from src.constants.type import ScreenArea
-from src.game.resource import ImageResource
+from src.game.resource import ImageResource, ButtonResource
+from src.utils.number import random_point_in_area
 
 
 class GameController:
@@ -89,3 +90,11 @@ class GameController:
             return area
 
         return (0, 0), (0, 0)
+
+    def tap_button(self, button: ButtonResource) -> bool:
+        point = random_point_in_area(button.area)
+        button.is_tapped = False
+        if self._device.tap(point):
+            button.is_tapped = True
+            return True
+        return False
