@@ -16,3 +16,13 @@ Feature: Game Controller
     And The game stuck in Lobby page until timeout
     When Controller wait for Campaign landmark to appear with timeout 2 seconds
     Then It should return false
+
+  Scenario: Find a matching image and get the area in Lobby page
+    Given The game is in Lobby page
+    When Controller find the image
+    Then It should return the area of the image
+
+  Scenario: Not found a matching image in Lobby page
+    Given The game is in Lobby page
+    When Controller find the image not in Lobby
+    Then It should return zero area

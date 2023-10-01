@@ -1,6 +1,7 @@
 import time
 
 import cv2
+import numpy as np
 
 from src.android.device import AndroidDevice
 from src.game.resource import ImageResource
@@ -12,16 +13,34 @@ class GameController:
     def __init__(self, device: AndroidDevice):
         self._device = device
 
+    def _match_image_resource_with_screen(self, image: ImageResource):
+        """Match ImageResource with game screen.
+
+        Before matching, convert both images to grayscale.
+
+        Args:
+            image: ImageResource
+
+        Return:
+            Matching template result and shape of template
+        """
+        screenshot = self._device.screenshot()
+        screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2GRAY)
+        template = cv2.cvtColor(image.load(), cv2.COLOR_RGB2GRAY)
+
+        return (
+            cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED),
+            template.shape[::-1],
+        )
+
     def is_image_on_screen(
         self, image: ImageResource, threshold: float = 0.969
     ) -> bool:
         """Check if image is on screen."""
-        screenshot = self._device.screenshot()
-        screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2GRAY)
-        template = cv2.cvtColor(image.load(), cv2.COLOR_RGB2GRAY)
-        result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, _ = cv2.minMaxLoc(result)
-        return max_val >= threshold
+        result, _ = self._match_image_resource_with_screen(image)
+        locations = np.where(result >= threshold)
+
+        return len(locations) > 0
 
     def until_image_is_on_screen(
         self,
@@ -37,3 +56,23 @@ class GameController:
                 return True
             time.sleep(delay)
         return False
+
+    def find_image_on_screen(
+        self, image: ImageResource, threshold: float = 0.969
+    ) -> tuple[tuple[int, int], tuple[int, int]]:
+        """Find image resource on game screen.
+
+        Args:
+            image: ImageResource
+            threshold: Matching threshold (default: 0.969)
+
+        Return:
+            top-left and bottom-right coordinates
+        """
+        result, shape = self._match_image_resource_with_screen(image)
+        locations = np.where(result >= threshold)
+
+        for pt in zip(*locations[::-1]):
+            return pt[::-1], (pt[0] + shape[0], pt[1] + shape[1])  # type: ignore
+
+        return (0, 0), (0, 0)

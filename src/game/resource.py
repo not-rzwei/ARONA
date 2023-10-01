@@ -15,6 +15,7 @@ class Resource(ABC):
 class ImageResource(Resource):
     def __init__(self, name: str):
         self.name = name
+        self.area = ((0, 0), (0, 0))
 
     def __repr__(self):
         return f"ImageResource({self.name})"
@@ -25,12 +26,3 @@ class ImageResource(Resource):
         if not filename.exists():
             raise FileNotFoundError(f"File {filename} not found")
         return cv2.imread(str(filename))[..., ::-1]  # type: ignore
-
-
-class ButtonResource(ImageResource):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self.area = ((0, 0), (0, 0))
-
-    def __repr__(self):
-        return f"ButtonResource({self.name})"
