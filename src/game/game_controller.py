@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 from src.android.device import AndroidDevice
+from src.constants.type import ScreenArea
 from src.game.resource import ImageResource
 
 
@@ -58,21 +59,33 @@ class GameController:
         return False
 
     def find_image_on_screen(
-        self, image: ImageResource, threshold: float = 0.969
-    ) -> tuple[tuple[int, int], tuple[int, int]]:
+        self, image: ImageResource, threshold: float = 0.969, cache: bool = False
+    ) -> ScreenArea:
         """Find image resource on game screen.
 
         Args:
             image: ImageResource
             threshold: Matching threshold (default: 0.969)
+            cache: Cache matching result (default: False)
 
         Return:
             top-left and bottom-right coordinates
         """
+        if cache and image.area != ((0, 0), (0, 0)):
+            return image.area
+
         result, shape = self._match_image_resource_with_screen(image)
         locations = np.where(result >= threshold)
 
         for pt in zip(*locations[::-1]):
-            return pt[::-1], (pt[0] + shape[0], pt[1] + shape[1])  # type: ignore
+            area: ScreenArea = pt[::-1], (
+                pt[0] + shape[0],
+                pt[1] + shape[1],
+            )  # type: ignore
+
+            if cache:
+                image.area = area
+
+            return area
 
         return (0, 0), (0, 0)

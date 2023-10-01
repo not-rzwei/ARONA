@@ -22,6 +22,12 @@ Feature: Game Controller
     When Controller find the image
     Then It should return the area of the image
 
+  Scenario: Find a matching image with cache enabled
+    Given The game is in Lobby page
+    When Controller find the same image twice
+    Then It should return the area of the image
+    And Matching should be done only once
+
   Scenario: Not found a matching image in Lobby page
     Given The game is in Lobby page
     When Controller find the image not in Lobby
