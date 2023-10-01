@@ -15,8 +15,8 @@ def test_scenario():
 
 @given("Navigator is on Lobby", target_fixture="navigator")
 def given1(lobby, campaign, mission):
-    device = mock.Mock()
-    navigator = Navigator(device)
+    controller = mock.Mock()
+    navigator = Navigator(controller)
     navigator.register(lobby, campaign, mission)
     navigator.set_current_page("Lobby")
     return navigator

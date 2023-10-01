@@ -4,7 +4,6 @@ import pytest
 from pytest_bdd import scenario, given, then, when
 
 from src.game.navigator import Navigator
-from src.game.resource import ImageResource
 
 
 @scenario(
@@ -17,23 +16,22 @@ def test_scenario():
 
 @pytest.fixture
 def navigator(lobby, campaign, mission):
-    device = mock.Mock()
-    navigator = Navigator(device)
+    controller = mock.Mock()
+    navigator = Navigator(controller)
     navigator.register(lobby, campaign, mission)
     return navigator
 
 
 @given("Navigator is on Lobby")
-@given("Screenshot is taken from Campaign", target_fixture="screenshot")
+@given("Screenshot is taken from Campaign")
 def given1(navigator):
     navigator.set_current_page("Lobby")
-
-    return ImageResource("tests/pages/CAMPAIGN.jpg").load()
+    navigator._controller.is_image_on_screen.return_value = False
 
 
 @when("Navigator match current page", target_fixture="is_current_page")
-def when1(navigator, screenshot):
-    return navigator.match_current_page(screenshot)
+def when1(navigator):
+    return navigator.match_current_page()
 
 
 @then("Navigator should return false")

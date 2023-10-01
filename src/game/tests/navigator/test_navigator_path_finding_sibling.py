@@ -20,8 +20,8 @@ def given1(lobby, campaign, mission):
     raid = Page("Raid")
     campaign.link(raid)
 
-    device = mock.Mock()
-    navigator = Navigator(device)
+    controller = mock.Mock()
+    navigator = Navigator(controller)
     navigator.register(lobby, campaign, mission, raid)
     navigator.set_current_page("Mission")
     return navigator

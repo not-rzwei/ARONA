@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.game.resource import ImageCue
+from src.game.resource import ImageResource
 
 
 class Page:
@@ -22,5 +22,5 @@ class Page:
                 self.links.append(page)
 
     @property
-    def cue(self) -> ImageCue:
-        return ImageCue(f"pages/{self.name.lower()}/LANDMARK.png")
+    def cue(self):
+        return ImageResource(f"pages/{self.name.lower()}/LANDMARK.png")

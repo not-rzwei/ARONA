@@ -17,20 +17,20 @@ def test_scenario():
 
 @pytest.fixture
 def navigator(lobby, campaign, mission):
-    device = mock.Mock()
-    navigator = Navigator(device)
+    controller = mock.Mock()
+    navigator = Navigator(controller)
     navigator.register(lobby, campaign, mission)
     return navigator
 
 
-@given("Screenshot is taken from Lobby", target_fixture="screenshot")
+@given("Screenshot is taken from Lobby")
 def given1():
     return ImageResource("tests/pages/LOBBY.jpg").load()
 
 
 @when("Navigator detect page", target_fixture="page")
-def when1(navigator, screenshot):
-    return navigator.detect_page(screenshot)
+def when1(navigator):
+    return navigator.detect_page()
 
 
 @then("Navigator should return Lobby")

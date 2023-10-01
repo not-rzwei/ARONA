@@ -1,16 +1,14 @@
 from typing import List, Dict
 
-import numpy.typing as npt
-
-from src.adapters.driver import DriverAdapter
+from src.game.game_controller import GameController
 from src.game.page import Page
 
 
 class Navigator:
     """Manage the page navigation of the game"""
 
-    def __init__(self, device: DriverAdapter):
-        self._device = device
+    def __init__(self, controller: GameController):
+        self._controller = controller
         self.pages: Dict[str, Page] = {}
         self.current_page = Page("")
 
@@ -51,17 +49,17 @@ class Navigator:
 
         return None
 
-    def detect_page(self, screenshot: npt.NDArray) -> Page | None:
+    def detect_page(self) -> Page | None:
         try:
             for page in self.pages.values():
-                if page.cue.is_appeared_in(screenshot):
+                if self._controller.is_image_on_screen(page.cue):
                     return page
             return None
         except (AttributeError, FileNotFoundError, ValueError):
             return None
 
-    def match_current_page(self, screenshot: npt.NDArray) -> bool:
+    def match_current_page(self) -> bool:
         try:
-            return self.current_page.cue.is_appeared_in(screenshot)
+            return self._controller.is_image_on_screen(self.current_page.cue)
         except (AttributeError, FileNotFoundError, ValueError):
             return False
