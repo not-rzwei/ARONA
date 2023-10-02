@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.game.resource import ImageResource
+from src.game.resource import ImageResource, ButtonResource
 
 
 class Page:
@@ -24,3 +24,7 @@ class Page:
     @property
     def cue(self):
         return ImageResource(f"pages/{self.name.lower()}/LANDMARK.png")
+
+    @property
+    def entrypoint(self):
+        return ButtonResource(f"pages/{self.name.lower()}/ENTRYPOINT.png")

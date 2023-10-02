@@ -44,3 +44,7 @@ Feature: Navigator
     When Navigator match current page
     Then Navigator should return false
 
+  Scenario: Navigate to page
+    Given Navigator is on Lobby
+    When Navigator navigate to Campaign
+    Then Navigator should be on Campaign

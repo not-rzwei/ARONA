@@ -63,3 +63,20 @@ class Navigator:
             return self._controller.is_image_on_screen(self.current_page.cue)
         except (AttributeError, FileNotFoundError, ValueError):
             return False
+
+    def navigate_to(self, destination: str) -> bool:
+        path = self.find_path(destination)
+    
+        if not path:
+            return False
+    
+        for page in path:
+            if not self._controller.tap_button(page.entrypoint, cache=True):
+                return False
+    
+            if not self._controller.until_image_is_on_screen(page.cue, timeout=10):
+                return False
+    
+            self.current_page = page
+    
+        return True
