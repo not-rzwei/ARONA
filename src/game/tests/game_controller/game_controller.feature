@@ -33,13 +33,12 @@ Feature: Game Controller
     When Controller find the image not in Lobby
     Then It should return zero area
 
-  Scenario: Tap a button
-    Given Button area is ((0, 0), (100, 100))
+  Scenario: Find and tap a button
+    Given Button is in the screen
     When Controller tap the button
     Then It should return true if the button is tapped
 
-  Scenario: Find button area if area hasn't been set before tapping
+  Scenario: Tap a button outside the screen
     Given Button area is ((0,0), (0,0))
     When Controller tap the button
-    Then Find button area should be called
-    And It should return true if the button is tapped
+    Then It should return false

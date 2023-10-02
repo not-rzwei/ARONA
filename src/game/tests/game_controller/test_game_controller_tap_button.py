@@ -9,7 +9,7 @@ from src.game.resource import ButtonResource
 
 @scenario(
     feature_name="game_controller.feature",
-    scenario_name="Tap a button",
+    scenario_name="Find and tap a button",
 )
 def test_scenario():
     pass
@@ -21,10 +21,12 @@ def game_controller():
     return GameController(device)
 
 
-@given("Button area is ((0, 0), (100, 100))", target_fixture="button")
-def given1():
+@given("Button is in the screen", target_fixture="button")
+def given1(game_controller):
     button = ButtonResource("")
     button.area = ((0, 0), (100, 100))
+
+    game_controller.find_image_on_screen = mock.Mock(return_value=button.area)
     return button
 
 
@@ -33,7 +35,6 @@ def when1(game_controller, button):
     return game_controller.tap_button(button)
 
 
-@then("It should return true if the button is tapped")
+@then("It should return true")
 def then1(result, button):
     assert result is True
-    assert button.is_tapped is True
