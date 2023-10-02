@@ -91,13 +91,13 @@ class GameController:
 
         return (0, 0), (0, 0)
 
-    def tap_button(self, button: ButtonResource) -> bool:
+    def tap_button(self, button: ButtonResource, cache: bool = True) -> bool:
         button.is_tapped = False
-        area = self.find_image_on_screen(button)
-        
+        area = self.find_image_on_screen(button, cache=cache)
+
         if area == ((0, 0), (0, 0)):
             return False
-        
+
         point = random_point_in_area(area)
         if self._device.tap(point):
             button.is_tapped = True
