@@ -24,6 +24,8 @@ from src.utils.logger import app_logger
 # Disable uiautomator2 logger as it is too verbose
 uiautomator2.logger.disabled = True
 logging.getLogger("logzero").disabled = True
+logging.getLogger("uiautomator2").disabled = True
+logging.getLogger("uiautomator2.client").disabled = True
 
 
 class Error(ErrorMessage):
