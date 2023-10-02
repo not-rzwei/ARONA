@@ -36,7 +36,7 @@ Feature: Game Controller
   Scenario: Find and tap a button
     Given Button is in the screen
     When Controller tap the button
-    Then It should return true if the button is tapped
+    Then It should return true
 
   Scenario: Tap a button outside the screen
     Given Button area is ((0,0), (0,0))
