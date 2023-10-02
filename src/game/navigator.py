@@ -1,3 +1,4 @@
+from collections import deque
 from typing import List, Dict
 
 from src.game.game_controller import GameController
@@ -11,6 +12,7 @@ class Navigator:
         self._controller = controller
         self.pages: Dict[str, Page] = {}
         self.current_page = Page("")
+        self.history: List[Page] = []
 
     def register(self, *pages: Page):
         for page in pages:
@@ -20,14 +22,14 @@ class Navigator:
         if page in self.pages:
             self.current_page = self.pages[page]
 
-    def find_path(self, destination: str) -> List[Page] | None:
+    def find_path(self, destination: str) -> deque[Page] | None:
         visited = set()
-        path = []
+        path: deque[Page] = deque()
 
         if destination not in self.pages:
             return None
 
-        def dfs_search(current_page) -> List[Page] | None:
+        def dfs_search(current_page) -> deque[Page] | None:
             visited.add(current_page.name)
             path.append(current_page)
 
@@ -66,17 +68,23 @@ class Navigator:
 
     def navigate_to(self, destination: str) -> bool:
         path = self.find_path(destination)
-    
+
         if not path:
             return False
-    
+
+        if not self.match_current_page():
+            return False
+
+        path.popleft()
+
         for page in path:
             if not self._controller.tap_button(page.entrypoint, cache=True):
                 return False
-    
+
             if not self._controller.until_image_is_on_screen(page.cue, timeout=10):
                 return False
-    
+
             self.current_page = page
-    
+            self.history.append(page)
+
         return True

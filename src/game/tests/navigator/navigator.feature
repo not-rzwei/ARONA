@@ -48,3 +48,9 @@ Feature: Navigator
     Given Navigator is on Lobby
     When Navigator navigate to Campaign
     Then Navigator should be on Campaign
+
+  Scenario: Remove first page from path when navigating
+    Given Navigator is on Lobby
+    And Screen is on Lobby
+    When Navigator navigate to Campaign
+    Then Navigator history should only have Campaign
