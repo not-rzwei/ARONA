@@ -37,3 +37,9 @@ Feature: Game Controller
     Given Button area is ((0, 0), (100, 100))
     When Controller tap the button
     Then It should return true if the button is tapped
+
+  Scenario: Find button area if area hasn't been set before tapping
+    Given Button area is ((0,0), (0,0))
+    When Controller tap the button
+    Then Find button area should be called
+    And It should return true if the button is tapped
