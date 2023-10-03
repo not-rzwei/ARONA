@@ -73,7 +73,6 @@ class AndroidDevice:
             pass
 
     def screenshot(self) -> npt.NDArray:
-        self.logger.info(f"Taking screenshot")
         ss = self._screenshot.take()
         ss_height, ss_width, _ = ss.shape
         ss_orientation = 0 if ss_height > ss_width else 1
