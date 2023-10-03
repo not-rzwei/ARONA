@@ -27,6 +27,7 @@ class GameController:
             Matching template result and shape of template
         """
         screenshot = self._device.screenshot()
+        screenshot = cv2.convertScaleAbs(screenshot)
         screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2GRAY)
         template = cv2.cvtColor(image.load(), cv2.COLOR_RGB2GRAY)
 
@@ -40,9 +41,9 @@ class GameController:
     ) -> bool:
         """Check if image is on screen."""
         result, _ = self._match_image_resource_with_screen(image)
-        locations = np.where(result >= threshold)
+        _, max_val, _, _ = cv2.minMaxLoc(result)
 
-        return len(locations) > 0
+        return max_val >= threshold
 
     def until_image_is_on_screen(
         self,
@@ -79,10 +80,10 @@ class GameController:
         locations = np.where(result >= threshold)
 
         for pt in zip(*locations[::-1]):
-            area: ScreenArea = pt[::-1], (
-                pt[0] + shape[0],
-                pt[1] + shape[1],
-            )  # type: ignore
+            area: ScreenArea = (
+                (pt[0], pt[1]),
+                (pt[0] + shape[0], pt[1] + shape[1]),
+            )
 
             if cache:
                 image.area = area
