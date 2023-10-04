@@ -54,3 +54,11 @@ Feature: Navigator
     And Screen is on Lobby
     When Navigator navigate to Campaign
     Then Navigator history should only have Campaign
+
+  Scenario: Navigate to parent page with back button
+    Given Navigator is on Mission
+    And Screen is on Mission
+    And Back button is set
+    When Navigator navigates to Campaign
+    Then Navigator history should only have Campaign
+    And Back button should be tapped

@@ -3,6 +3,7 @@ from typing import List, Dict
 
 from src.game.game_controller import GameController
 from src.game.page import Page
+from src.game.resource import ButtonResource
 
 
 class Navigator:
@@ -13,10 +14,14 @@ class Navigator:
         self.pages: Dict[str, Page] = {}
         self.current_page = Page("")
         self.history: List[Page] = []
+        self.back_button = ButtonResource("")
 
     def register(self, *pages: Page):
         for page in pages:
             self.pages[page.name] = page
+
+    def set_back_button(self, back_button: ButtonResource):
+        self.back_button = back_button
 
     def set_current_page(self, page: str):
         if page in self.pages:
@@ -78,7 +83,12 @@ class Navigator:
         path.popleft()
 
         for page in path:
-            if not self._controller.tap_button(page.entrypoint, cache=True):
+            entrypoint = page.entrypoint
+
+            if self.back_button and self.current_page.parent == page:
+                entrypoint = self.back_button
+
+            if not self._controller.tap_button(entrypoint, cache=True):
                 return False
 
             if not self._controller.until_image_is_on_screen(page.cue, timeout=10):
