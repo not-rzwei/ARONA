@@ -104,3 +104,9 @@ class GameController:
             button.is_tapped = True
             return True
         return False
+
+    def tap_center_screen(self) -> bool:
+        screen_size = self._device.screen_size
+        area = ((0, 0), screen_size)
+
+        return self._device.tap(random_point_in_area(area))

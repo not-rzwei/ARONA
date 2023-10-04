@@ -77,6 +77,14 @@ class Navigator:
         if not path:
             return False
 
+        # If the current page is the root page, tap the center of the screen
+        # to dismiss the root page idle screen
+        if not self.current_page.parent:
+            self._controller.tap_center_screen()
+            self._controller.until_image_is_on_screen(
+                self.current_page.cue, timeout=1, delay=0.3
+            )
+
         if not self.match_current_page():
             return False
 

@@ -72,6 +72,10 @@ class AndroidDevice:
 
             pass
 
+    @property
+    def screen_size(self) -> tuple[int, int]:
+        return self._driver.get_device_resolution()
+
     def screenshot(self) -> npt.NDArray:
         ss = self._screenshot.take()
         ss_height, ss_width, _ = ss.shape
