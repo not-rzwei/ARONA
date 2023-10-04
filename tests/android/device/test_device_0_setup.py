@@ -30,4 +30,4 @@ def then1(device: AndroidDevice):
 
 @then("I can touch the screen")
 def then2(device: AndroidDevice):
-    device._touch.tap((50, 50))
+    device._touch.tap((0, 0))
