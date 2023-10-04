@@ -12,3 +12,9 @@ Feature: Navigator
     Given The game is on Lobby
     When Navigator navigates to Campaign
     Then Campaign screen is shown
+
+  Scenario: Back to Lobby
+    Given The game is on Campaign
+    And Back button is set
+    When Navigator navigates to Lobby
+    Then Lobby screen is shown
