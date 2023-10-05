@@ -93,10 +93,11 @@ class Navigator:
         if not self.match_current_page():
             return False
 
+        cur_page_ancestor_count = self.ancestor_count(self.current_page)
+        dest_page_ancestor_count = self.ancestor_count(self.pages[destination])
         if (
-            self.ancestor_count(self.current_page)
-            >= self.ancestor_count(self.pages[destination])
-            and self.current_page.parent != self.pages[destination].parent
+            cur_page_ancestor_count >= dest_page_ancestor_count
+            and len(path) >= cur_page_ancestor_count + dest_page_ancestor_count
         ):
             for _ in range(self.ancestor_count(self.current_page)):
                 path.popleft()
