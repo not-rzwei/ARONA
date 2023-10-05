@@ -4,17 +4,22 @@ Feature: Navigator
     Given Navigator is initialized
     And Pages are loaded
       """
-      Lobby Page
-      Campaign Page is child of Lobby Page
+      Lobby => Campaign
+      Campaign => Mission, Bounty
       """
 
-  Scenario: Navigate to Lobby
+  Scenario: Navigate to Mission
     Given The game is on Lobby
-    When Navigator navigates to Campaign
-    Then Campaign screen is shown
+    When Navigator navigates to Mission
+    Then Campaign entrypoint is tapped
+    And Mission entrypoint is tapped
+    And Mission screen is shown
+    And History should be Campaign, Mission
 
-  Scenario: Back to Lobby
-    Given The game is on Campaign
-    And Back button is set
-    When Navigator navigates to Lobby
-    Then Lobby screen is shown
+  Scenario: Navigate to Bounty
+    Given The game is on Mission
+    When Navigator navigates to Bounty
+    Then The back button is tapped
+    And Bounty entrypoint is tapped
+    And Bounty screen is shown
+    And History should be Campaign, Bounty

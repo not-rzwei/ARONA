@@ -1,30 +1,33 @@
 from pytest_bdd import scenario, when, then, given
 
-from src.game.resource import ButtonResource
-
 
 @scenario(
     feature_name="navigator.feature",
-    scenario_name="Back to Lobby",
+    scenario_name="Navigate to Bounty",
 )
 def test_scenario():
     pass
 
 
-@given("The game is on Campaign")
-@given("Back button is set")
+@given("The game is on Mission")
 def given1(navigator):
-    navigator.set_current_page("Campaign")
-
-    back_button = ButtonResource("common/NAVIGATION_BACK.png")
-    navigator.set_back_button(back_button)
+    navigator.set_current_page("Mission")
 
 
-@when("Navigator navigates to Lobby")
+@when("Navigator navigates to Bounty")
 def when1(navigator):
-    navigator.navigate_to("Lobby")
+    navigator.navigate_to("Bounty")
 
 
-@then("Lobby screen is shown")
+@then("The back button is tapped")
+@then("Bounty entrypoint is tapped")
+@then("Bounty screen is shown")
+@then("History should be Campaign, Bounty")
 def then1(navigator):
-    assert navigator.current_page.name == "Lobby"
+    assert navigator.back_button.is_tapped is True
+    assert navigator.pages["Bounty"].entrypoint.is_tapped is True
+    assert navigator.current_page.name == "Bounty"
+    assert navigator.history == [
+        navigator.pages["Campaign"],
+        navigator.pages["Bounty"],
+    ]

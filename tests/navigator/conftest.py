@@ -8,6 +8,7 @@ from src.android.touches.shell_input import ShellInput
 from src.game.game_controller import GameController
 from src.game.navigator import Navigator
 from src.game.page import Page
+from src.game.resource import ButtonResource
 
 
 class CoreDeviceContainer(containers.DeclarativeContainer):
@@ -29,15 +30,19 @@ def container():
     game_controller = GameController(device)
     navigator = Navigator(game_controller)
 
+    back_button = ButtonResource("common/NAVIGATION_BACK.png")
+    navigator.set_back_button(back_button)
     yield navigator
 
     device.disconnect()
 
 
-@given(parsers.parse("Pages are loaded\n{content}"), target_fixture="pages")
+@given(parsers.parse("Pages are loaded\n{content}"))
 def pages(navigator):
     lobby = Page("Lobby")
     campaign = Page("Campaign")
+    mission = Page("Mission")
+    bounty = Page("Bounty")
     lobby.link(campaign)
-    navigator.register(lobby, campaign)
-    return lobby, campaign
+    campaign.link(mission, bounty)
+    navigator.register(lobby, campaign, mission, bounty)
