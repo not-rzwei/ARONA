@@ -11,6 +11,9 @@ class Page:
         self.links: list["Page"] = []
         self.parent: Optional["Page"] = None
 
+        self.cue = ImageResource(f"pages/{self.name.lower()}/LANDMARK.png")
+        self.entrypoint = ButtonResource(f"pages/{self.name.lower()}/ENTRYPOINT.png")
+
     def __repr__(self):
         return f"Page({self.name})"
 
@@ -20,11 +23,3 @@ class Page:
                 page.parent = self
                 page.links.append(self)
                 self.links.append(page)
-
-    @property
-    def cue(self):
-        return ImageResource(f"pages/{self.name.lower()}/LANDMARK.png")
-
-    @property
-    def entrypoint(self):
-        return ButtonResource(f"pages/{self.name.lower()}/ENTRYPOINT.png")
