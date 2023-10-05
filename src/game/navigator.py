@@ -71,6 +71,11 @@ class Navigator:
         except (AttributeError, FileNotFoundError, ValueError):
             return False
 
+    def ancestor_count(self, page: Page) -> int:
+        if page.parent is None:
+            return 0
+        return 1 + self.ancestor_count(page.parent)
+
     def navigate_to(self, destination: str) -> bool:
         path = self.find_path(destination)
 
@@ -88,7 +93,15 @@ class Navigator:
         if not self.match_current_page():
             return False
 
-        path.popleft()
+        if (
+            self.ancestor_count(self.current_page)
+            >= self.ancestor_count(self.pages[destination])
+            and self.current_page.parent != self.pages[destination].parent
+        ):
+            for _ in range(self.ancestor_count(self.current_page)):
+                path.popleft()
+        else:
+            path.popleft()
 
         for page in path:
             entrypoint = page.entrypoint
