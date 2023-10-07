@@ -110,10 +110,13 @@ class Navigator:
             if self.back_button and self.current_page.parent == page:
                 entrypoint = self.back_button
 
-            if not self._controller.tap_button(entrypoint, cache=True):
-                return False
+            for _ in range(3):
+                if not self._controller.tap_button(entrypoint, cache=True):
+                    return False
 
-            if not self._controller.until_image_is_on_screen(page.cue, timeout=10):
+                if self._controller.until_image_is_on_screen(page.cue, timeout=2):
+                    break
+            else:
                 return False
 
             self.current_page = page
